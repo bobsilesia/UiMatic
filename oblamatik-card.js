@@ -1,5 +1,5 @@
 /**
- * UiMatic – Oblamatik Lovelace Card v0.4.2
+ * UiMatic – Oblamatik Lovelace Card v0.4.3
  * Modern, minimalist bath controller UI for Home Assistant
  * https://github.com/bobsilesia/UiMatic
  */
@@ -133,7 +133,7 @@ class OblamatikCard extends HTMLElement {
           display: flex; align-items: center;
           justify-content: space-between; margin-bottom: 28px;
         }
-        .header-title { font-size: 18px; font-weight: 600; color: #e0e8f0; letter-spacing: 0.3px; }
+        .header-title { font-size: 18px; font-weight: 600; color: #6b7a8d; letter-spacing: 0.3px; }
         .status-dot {
           width: 8px; height: 8px; border-radius: 50%; background: #3a4050;
           transition: background 0.4s ease, box-shadow 0.4s ease;
