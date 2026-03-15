@@ -1,5 +1,5 @@
 /**
- * UiMatic – Oblamatik Lovelace Card v0.4.1
+ * UiMatic – Oblamatik Lovelace Card v0.4.2
  * Modern, minimalist bath controller UI for Home Assistant
  * https://github.com/bobsilesia/UiMatic
  */
@@ -167,15 +167,7 @@ class OblamatikCard extends HTMLElement {
         .dial-value { font-size: clamp(16px, 5cqw, 26px); font-weight: 700; color: #e8f0fe; line-height: 1; }
         .dial-unit  { font-size: clamp(8px, 2cqw, 11px); color: #6b7a8d; margin-top: 2px; }
 
-        .temp-bar {
-          width: 100%; height: 3px; border-radius: 2px;
-          background: linear-gradient(90deg, #3b82f6 0%, #f59e0b 50%, #ef4444 100%);
-          opacity: 0.5; position: relative;
-        }
-        .temp-bar-indicator {
-          position: absolute; top: -4px; width: 10px; height: 10px; border-radius: 50%;
-          background: #fff; box-shadow: 0 0 6px rgba(255,255,255,0.6); transform: translateX(-50%);
-        }
+
 
         .water-btn-wrapper { display: flex; flex-direction: column; align-items: center; gap: 10px; }
         .water-btn {
@@ -251,7 +243,7 @@ class OblamatikCard extends HTMLElement {
             <div class="dial-container" id="tempDial">
               <svg class="dial-svg" viewBox="0 0 110 110">
                 <defs>
-                  <linearGradient id="tg" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <linearGradient id="tg" x1="100%" y1="0%" x2="0%" y2="0%">
                     <stop offset="0%"   stop-color="#3b82f6"/>
                     <stop offset="50%"  stop-color="#f59e0b"/>
                     <stop offset="100%" stop-color="#ef4444"/>
@@ -267,9 +259,6 @@ class OblamatikCard extends HTMLElement {
                 <div class="dial-value" id="tempVal">${this._tempValue}</div>
                 <div class="dial-unit">°C</div>
               </div>
-            </div>
-            <div class="temp-bar">
-              <div class="temp-bar-indicator" id="tempInd" style="left:45%"></div>
             </div>
           </div>
 
@@ -433,8 +422,6 @@ class OblamatikCard extends HTMLElement {
 
   _updateTempArc() {
     this._setArc("tempArc", this._tempRatio());
-    const ind = this.shadowRoot.getElementById("tempInd");
-    if (ind) ind.style.left = `${(this._tempRatio() * 100).toFixed(1)}%`;
   }
 
   _updateFlowArc() {
