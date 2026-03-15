@@ -453,15 +453,18 @@ class OblamatikCard extends HTMLElement {
 
   // ── Commands ──────────────────────────────────────────────────────────────
 
+  _callService(domain, service, entityId, serviceData = {}) {
+    // Use target.entity_id (HA 2022+) to avoid validation errors with entity IDs
+    this._hass.callService(domain, service, serviceData, { entity_id: entityId });
+  }
+
   _toggleWater() {
     if (!this._hass) { this._toast("HA not connected"); return; }
     const { entity_switch } = this._config;
     if (!entity_switch) { this._toast("No switch entity"); return; }
 
     const newState = !this._waterOn;
-    this._hass.callService("switch", newState ? "turn_on" : "turn_off", {
-      entity_id: entity_switch,
-    });
+    this._callService("switch", newState ? "turn_on" : "turn_off", entity_switch);
     this._waterOn = newState;
     this._updateWaterBtn();
     this._toast(newState ? "💧 Water ON" : "⏹ Water OFF");
@@ -473,9 +476,7 @@ class OblamatikCard extends HTMLElement {
     if (!entity_drain) { this._toast("No drain entity"); return; }
 
     const newState = !this._drainOpen;
-    this._hass.callService("switch", newState ? "turn_on" : "turn_off", {
-      entity_id: entity_drain,
-    });
+    this._callService("switch", newState ? "turn_on" : "turn_off", entity_drain);
     this._drainOpen = newState;
     this._updateDrainBtn();
     this._toast(newState ? "🔵 Drain open" : "⚫ Drain closed");
@@ -485,10 +486,7 @@ class OblamatikCard extends HTMLElement {
     if (!this._hass) return;
     const { entity_number_temp } = this._config;
     if (!entity_number_temp) { this._toast("No temp entity"); return; }
-    this._hass.callService("number", "set_value", {
-      entity_id: entity_number_temp,
-      value: this._tempValue,
-    });
+    this._callService("number", "set_value", entity_number_temp, { value: this._tempValue });
     this._toast(`🌡 ${this._tempValue}°C`);
   }
 
@@ -496,10 +494,7 @@ class OblamatikCard extends HTMLElement {
     if (!this._hass) return;
     const { entity_number_flow } = this._config;
     if (!entity_number_flow) { this._toast("No flow entity"); return; }
-    this._hass.callService("number", "set_value", {
-      entity_id: entity_number_flow,
-      value: this._flowValue,
-    });
+    this._callService("number", "set_value", entity_number_flow, { value: this._flowValue });
     this._toast(`🌊 ${this._flowValue} L/min`);
   }
 
