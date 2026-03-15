@@ -103,6 +103,30 @@ max_flow: 10
 
 ---
 
+## Setting card height
+
+By default the card sizes itself automatically. Use `card_height` when you want a **fixed height** – for example to make all cards in a grid the same size.
+
+**Fixed height in pixels:**
+```yaml
+type: custom:oblamatik-card
+name: Bath Controller
+# ... other options ...
+card_height: 400
+```
+
+**Any CSS value** (viewport-relative, etc.):
+```yaml
+type: custom:oblamatik-card
+name: Bath Controller
+# ... other options ...
+card_height: "50vh"
+```
+
+> **Tip:** When `card_height` is set, the card applies `box-sizing: border-box` so padding is included in the specified height.
+
+---
+
 ## Compatibility
 
 - Home Assistant 2022.6+
