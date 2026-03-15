@@ -1,0 +1,4 @@
+.DS_Store
+.clinerules
+node_modules/
+*.log
