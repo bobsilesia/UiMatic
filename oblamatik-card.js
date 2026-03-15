@@ -1,7 +1,6 @@
 /**
- * UiMatic – Oblamatik Lovelace Card v0.2.0
+ * UiMatic – Oblamatik Lovelace Card v0.3.0
  * Modern, minimalist bath controller UI for Home Assistant
- * Controls via HA entities (switch / number / binary_sensor)
  * https://github.com/bobsilesia/UiMatic
  */
 
@@ -23,11 +22,6 @@ class OblamatikCard extends HTMLElement {
   // ── Config ────────────────────────────────────────────────────────────────
 
   setConfig(config) {
-    if (!config.entity_switch && !config.entity_number_flow) {
-      throw new Error(
-        "UiMatic: define at least entity_switch or entity_number_flow"
-      );
-    }
     this._config = {
       name:               config.name               || "Bath Controller",
       entity_switch:      config.entity_switch       || null,
@@ -36,10 +30,10 @@ class OblamatikCard extends HTMLElement {
       entity_drain:       config.entity_drain        || null,
       entity_number_temp: config.entity_number_temp  || null,
       entity_number_flow: config.entity_number_flow  || null,
-      min_temp:           config.min_temp            ?? 20,
-      max_temp:           config.max_temp            ?? 60,
-      min_flow:           config.min_flow            ?? 0,
-      max_flow:           config.max_flow            ?? 10,
+      min_temp:           config.min_temp            != null ? config.min_temp : 20,
+      max_temp:           config.max_temp            != null ? config.max_temp : 60,
+      min_flow:           config.min_flow            != null ? config.min_flow : 0,
+      max_flow:           config.max_flow            != null ? config.max_flow : 10,
     };
     this._rendered = false;
     this._render();
@@ -54,7 +48,7 @@ class OblamatikCard extends HTMLElement {
   }
 
   _syncFromHass() {
-    if (!this._hass) return;
+    if (!this._hass || !this._rendered) return;
     const s = this._hass.states;
     const c = this._config;
 
@@ -77,7 +71,7 @@ class OblamatikCard extends HTMLElement {
       }
     }
 
-    // Temperature (number entity preferred, sensor as fallback)
+    // Temperature
     if (!this._draggingTemp) {
       const tempEnt = c.entity_number_temp || c.entity_temperature;
       if (tempEnt && s[tempEnt]) {
@@ -90,7 +84,7 @@ class OblamatikCard extends HTMLElement {
       }
     }
 
-    // Flow (number entity preferred, sensor as fallback)
+    // Flow
     if (!this._draggingFlow) {
       const flowEnt = c.entity_number_flow || c.entity_flow;
       if (flowEnt && s[flowEnt]) {
@@ -113,11 +107,14 @@ class OblamatikCard extends HTMLElement {
 
     this.shadowRoot.innerHTML = `
       <style>
-        :host { display: block; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+        :host {
+          display: block;
+          font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
 
-        .card {
-          background: linear-gradient(145deg, #1a1f2e 0%, #0f1318 100%);
-          border-radius: 24px;
+        ha-card, .card {
+          background: linear-gradient(145deg, #1a1f2e 0%, #0f1318 100%) !important;
+          border-radius: 24px !important;
           padding: 24px;
           color: #fff;
           user-select: none;
@@ -125,16 +122,7 @@ class OblamatikCard extends HTMLElement {
           overflow: visible;
           position: relative;
         }
-        .card::before {
-          content: '';
-          position: absolute;
-          top: -60px; right: -60px;
-          width: 200px; height: 200px;
-          background: radial-gradient(circle, rgba(64,196,255,0.08) 0%, transparent 70%);
-          pointer-events: none; border-radius: 50%;
-        }
 
-        /* Header */
         .header {
           display: flex; align-items: center;
           justify-content: space-between; margin-bottom: 28px;
@@ -146,13 +134,11 @@ class OblamatikCard extends HTMLElement {
         }
         .status-dot.active { background: #40c4ff; box-shadow: 0 0 10px rgba(64,196,255,0.6); }
 
-        /* Controls row */
         .controls {
           display: flex; gap: 16px; justify-content: center;
           align-items: flex-start; margin-bottom: 24px;
         }
 
-        /* Dial */
         .dial-wrapper { display: flex; flex-direction: column; align-items: center; gap: 8px; flex: 1; }
         .dial-label { font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 1.2px; color: #6b7a8d; }
         .dial-container { position: relative; width: 110px; height: 110px; cursor: grab; touch-action: none; }
@@ -177,7 +163,6 @@ class OblamatikCard extends HTMLElement {
           background: #fff; box-shadow: 0 0 6px rgba(255,255,255,0.6); transform: translateX(-50%);
         }
 
-        /* Water button */
         .water-btn-wrapper { display: flex; flex-direction: column; align-items: center; gap: 10px; }
         .water-btn {
           width: 76px; height: 76px; border-radius: 50%; border: none;
@@ -205,7 +190,6 @@ class OblamatikCard extends HTMLElement {
         .water-btn.on .ripple-ring { animation: ripple 1.8s ease-out infinite; }
         .water-btn-label { font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 1.2px; color: #6b7a8d; }
 
-        /* Drain */
         .bottom-row { display: flex; gap: 10px; justify-content: center; }
         .drain-btn {
           flex: 1; height: 50px; border-radius: 14px; border: none;
@@ -223,10 +207,9 @@ class OblamatikCard extends HTMLElement {
         }
         .drain-btn svg { width: 17px; height: 17px; flex-shrink: 0; }
 
-        /* Toast */
         .toast {
-          position: absolute; bottom: -40px; left: 50%;
-          transform: translateX(-50%) translateY(0px);
+          position: absolute; bottom: 8px; left: 50%;
+          transform: translateX(-50%);
           background: rgba(15,20,30,0.95);
           border: 1px solid rgba(64,196,255,0.3);
           border-radius: 10px; padding: 7px 14px;
@@ -234,18 +217,9 @@ class OblamatikCard extends HTMLElement {
           opacity: 0; transition: opacity 0.3s ease;
           pointer-events: none;
           box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+          z-index: 10;
         }
         .toast.show { opacity: 1; }
-
-        /* Unavailable overlay */
-        .unavailable {
-          position: absolute; inset: 0; border-radius: 24px;
-          background: rgba(10,13,20,0.7);
-          display: flex; align-items: center; justify-content: center;
-          font-size: 12px; color: #6b7a8d; letter-spacing: 0.5px;
-          pointer-events: none; opacity: 0; transition: opacity 0.3s;
-        }
-        .unavailable.show { opacity: 1; pointer-events: all; }
       </style>
 
       <div class="card">
@@ -274,12 +248,12 @@ class OblamatikCard extends HTMLElement {
                 </g>
               </svg>
               <div class="dial-center">
-                <div class="dial-value" id="tempVal">--</div>
+                <div class="dial-value" id="tempVal">${this._tempValue}</div>
                 <div class="dial-unit">°C</div>
               </div>
             </div>
             <div class="temp-bar">
-              <div class="temp-bar-indicator" id="tempInd" style="left:50%"></div>
+              <div class="temp-bar-indicator" id="tempInd" style="left:45%"></div>
             </div>
           </div>
 
@@ -316,7 +290,7 @@ class OblamatikCard extends HTMLElement {
                 </g>
               </svg>
               <div class="dial-center">
-                <div class="dial-value" id="flowVal">--</div>
+                <div class="dial-value" id="flowVal">${this._flowValue}</div>
                 <div class="dial-unit">L/min</div>
               </div>
             </div>
@@ -335,7 +309,6 @@ class OblamatikCard extends HTMLElement {
         </div>
 
         <div class="toast" id="toast"></div>
-        <div class="unavailable" id="unavailable">No entities configured</div>
       </div>
     `;
 
@@ -350,29 +323,28 @@ class OblamatikCard extends HTMLElement {
 
   _attachEvents() {
     const root = this.shadowRoot;
+    const waterBtn = root.getElementById("waterBtn");
+    const drainBtn = root.getElementById("drainBtn");
 
-    root.getElementById("waterBtn").addEventListener("click", () => this._toggleWater());
-    root.getElementById("drainBtn").addEventListener("click", () => this._toggleDrain());
+    if (waterBtn) waterBtn.addEventListener("click", () => this._toggleWater());
+    if (drainBtn) drainBtn.addEventListener("click", () => this._toggleDrain());
 
     this._attachDial("tempDial", "temp");
     this._attachDial("flowDial", "flow");
   }
 
   _attachDial(dialId, type) {
-    const root = this.shadowRoot;
-    const dial = root.getElementById(dialId);
+    const dial = this.shadowRoot.getElementById(dialId);
     if (!dial) return;
 
-    const CIRC = 2 * Math.PI * 44;
-    const ARC  = 260;
+    const ARC = 260;
 
     const angleFromEvent = (e) => {
       const rect = dial.getBoundingClientRect();
       const cx = rect.left + rect.width  / 2;
       const cy = rect.top  + rect.height / 2;
       let deg = Math.atan2(e.clientY - cy, e.clientX - cx) * (180 / Math.PI);
-      // Offset: arc starts at -130° rotation + SVG top = 90° → shift by -40°
-      deg = ((deg - (-40)) % 360 + 360) % 360;
+      deg = ((deg + 40) % 360 + 360) % 360;
       return Math.min(ARC, Math.max(0, deg));
     };
 
@@ -402,7 +374,6 @@ class OblamatikCard extends HTMLElement {
       const dragging = type === "temp" ? this._draggingTemp : this._draggingFlow;
       if (!dragging) return;
       applyAngle(angleFromEvent(e));
-      e.preventDefault();
     });
 
     dial.addEventListener("pointerup", () => {
@@ -428,7 +399,7 @@ class OblamatikCard extends HTMLElement {
   _setArc(arcId, ratio) {
     const el = this.shadowRoot.getElementById(arcId);
     if (!el) return;
-    const CIRC = 2 * Math.PI * 44; // ≈ 276.46
+    const CIRC = 2 * Math.PI * 44;
     const filled = Math.max(0, Math.min(1, ratio)) * CIRC;
     const gap    = CIRC - filled + 77;
     el.setAttribute("stroke-dasharray", `${filled.toFixed(2)} ${gap.toFixed(2)}`);
@@ -480,43 +451,40 @@ class OblamatikCard extends HTMLElement {
     if (label) label.textContent = this._drainOpen ? "Drain Open" : "Drain";
   }
 
-  // ── Commands via HA services ──────────────────────────────────────────────
+  // ── Commands ──────────────────────────────────────────────────────────────
 
   _toggleWater() {
-    if (!this._hass) return;
+    if (!this._hass) { this._toast("HA not connected"); return; }
     const { entity_switch } = this._config;
-    if (!entity_switch) { this._toast("No switch entity configured"); return; }
+    if (!entity_switch) { this._toast("No switch entity"); return; }
 
     const newState = !this._waterOn;
     this._hass.callService("switch", newState ? "turn_on" : "turn_off", {
       entity_id: entity_switch,
     });
-    // Optimistic update
     this._waterOn = newState;
     this._updateWaterBtn();
-    this._toast(newState ? "💧 Water started" : "⏹ Water stopped");
+    this._toast(newState ? "💧 Water ON" : "⏹ Water OFF");
   }
 
   _toggleDrain() {
-    if (!this._hass) return;
+    if (!this._hass) { this._toast("HA not connected"); return; }
     const { entity_drain } = this._config;
-    if (!entity_drain) { this._toast("No drain entity configured"); return; }
+    if (!entity_drain) { this._toast("No drain entity"); return; }
 
     const newState = !this._drainOpen;
     this._hass.callService("switch", newState ? "turn_on" : "turn_off", {
       entity_id: entity_drain,
     });
-    // Optimistic update
     this._drainOpen = newState;
     this._updateDrainBtn();
-    this._toast(newState ? "🔵 Drain opened" : "⚫ Drain closed");
+    this._toast(newState ? "🔵 Drain open" : "⚫ Drain closed");
   }
 
   _sendTemp() {
     if (!this._hass) return;
     const { entity_number_temp } = this._config;
-    if (!entity_number_temp) { this._toast("No temperature entity configured"); return; }
-
+    if (!entity_number_temp) { this._toast("No temp entity"); return; }
     this._hass.callService("number", "set_value", {
       entity_id: entity_number_temp,
       value: this._tempValue,
@@ -527,8 +495,7 @@ class OblamatikCard extends HTMLElement {
   _sendFlow() {
     if (!this._hass) return;
     const { entity_number_flow } = this._config;
-    if (!entity_number_flow) { this._toast("No flow entity configured"); return; }
-
+    if (!entity_number_flow) { this._toast("No flow entity"); return; }
     this._hass.callService("number", "set_value", {
       entity_id: entity_number_flow,
       value: this._flowValue,
@@ -544,7 +511,7 @@ class OblamatikCard extends HTMLElement {
     t.textContent = msg;
     t.classList.add("show");
     clearTimeout(this._toastTimer);
-    this._toastTimer = setTimeout(() => t.classList.remove("show"), 2200);
+    this._toastTimer = setTimeout(() => t.classList.remove("show"), 2500);
   }
 
   // ── Card metadata ─────────────────────────────────────────────────────────
