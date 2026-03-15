@@ -519,14 +519,17 @@ class OblamatikCard extends HTMLElement {
   getCardSize() { return 4; }
 
   static getStubConfig() {
+    // Entity IDs include device IP with dots replaced by underscores
+    // Example for device at 192.168.1.36:
+    // switch.oblamatik_192_168_1_36_water_flow
     return {
       name: "Bath Controller",
-      entity_switch:      "switch.oblamatik_water_flow",
-      entity_temperature: "sensor.oblamatik_temperature",
-      entity_flow:        "sensor.oblamatik_flow_rate",
-      entity_drain:       "switch.oblamatik_drain",
-      entity_number_temp: "number.oblamatik_temperature",
-      entity_number_flow: "number.oblamatik_flow_rate",
+      entity_switch:      "switch.oblamatik_192_168_1_36_water_flow",
+      entity_temperature: "sensor.oblamatik_192_168_1_36_temperature",
+      entity_flow:        "sensor.oblamatik_192_168_1_36_flow_rate",
+      entity_drain:       "binary_sensor.oblamatik_192_168_1_36_bath_drain",
+      entity_number_temp: "number.oblamatik_192_168_1_36_temperature",
+      entity_number_flow: "number.oblamatik_192_168_1_36_flow_rate",
       min_temp: 20, max_temp: 60,
       min_flow: 0,  max_flow: 10,
     };

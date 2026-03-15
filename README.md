@@ -49,24 +49,21 @@ A modern, minimalist **Lovelace custom card** for Home Assistant to control **Ob
 
 ### Minimal (via HA entities)
 
+> **Note:** Entity IDs include the device IP with dots replaced by underscores.
+> For a device at `192.168.1.36`, the entity IDs look like:
+> `switch.oblamatik_192_168_1_36_water_flow`
+>
+> Check your exact entity names in **Developer Tools → States** (filter by `oblamatik`).
+
 ```yaml
 type: custom:oblamatik-card
 name: My Bath
-entity_switch: switch.oblamatik_water_flow
-entity_temperature: sensor.oblamatik_temperature
-entity_flow: sensor.oblamatik_flow_rate
-entity_drain: switch.oblamatik_drain
-entity_number_temp: number.oblamatik_temperature
-entity_number_flow: number.oblamatik_flow
-```
-
-### Direct device IP (without HA entities)
-
-```yaml
-type: custom:oblamatik-card
-name: Bath Controller
-host: 192.168.1.100
-port: 80
+entity_switch: switch.oblamatik_192_168_1_36_water_flow
+entity_temperature: sensor.oblamatik_192_168_1_36_temperature
+entity_flow: sensor.oblamatik_192_168_1_36_flow_rate
+entity_drain: binary_sensor.oblamatik_192_168_1_36_bath_drain
+entity_number_temp: number.oblamatik_192_168_1_36_temperature
+entity_number_flow: number.oblamatik_192_168_1_36_flow_rate
 ```
 
 ### Full configuration
@@ -74,21 +71,16 @@ port: 80
 ```yaml
 type: custom:oblamatik-card
 name: Bath Controller
-# HA entities (preferred)
-entity_switch: switch.oblamatik_water_flow
-entity_temperature: sensor.oblamatik_temperature
-entity_flow: sensor.oblamatik_flow_rate
-entity_drain: switch.oblamatik_drain
-entity_number_temp: number.oblamatik_temperature
-entity_number_flow: number.oblamatik_flow
-# Dial ranges
+entity_switch: switch.oblamatik_192_168_1_36_water_flow
+entity_temperature: sensor.oblamatik_192_168_1_36_temperature
+entity_flow: sensor.oblamatik_192_168_1_36_flow_rate
+entity_drain: binary_sensor.oblamatik_192_168_1_36_bath_drain
+entity_number_temp: number.oblamatik_192_168_1_36_temperature
+entity_number_flow: number.oblamatik_192_168_1_36_flow_rate
 min_temp: 20
 max_temp: 60
 min_flow: 0
-max_flow: 20
-# Direct IP fallback (optional)
-host: 192.168.1.100
-port: 80
+max_flow: 10
 ```
 
 ### Configuration options
