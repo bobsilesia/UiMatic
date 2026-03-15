@@ -99,6 +99,7 @@ max_flow: 10
 | `max_temp` | number | `60` | Maximum temperature (°C) |
 | `min_flow` | number | `0` | Minimum flow (L/min) |
 | `max_flow` | number | `10` | Maximum flow (L/min) |
+| `card_height` | number \| string | — | Card height in px (e.g. `400`) or any CSS value (e.g. `"50vh"`, `"500px"`). If omitted, the card uses its natural height. |
 
 ---
 

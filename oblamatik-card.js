@@ -1,5 +1,5 @@
 /**
- * UiMatic – Oblamatik Lovelace Card v0.3.0
+ * UiMatic – Oblamatik Lovelace Card v0.4.0
  * Modern, minimalist bath controller UI for Home Assistant
  * https://github.com/bobsilesia/UiMatic
  */
@@ -34,6 +34,7 @@ class OblamatikCard extends HTMLElement {
       max_temp:           config.max_temp            != null ? config.max_temp : 60,
       min_flow:           config.min_flow            != null ? config.min_flow : 0,
       max_flow:           config.max_flow            != null ? config.max_flow : 10,
+      card_height:        config.card_height         != null ? config.card_height : null,
     };
     this._rendered = false;
     this._render();
@@ -121,6 +122,7 @@ class OblamatikCard extends HTMLElement {
           box-shadow: 0 8px 32px rgba(0,0,0,0.4);
           overflow: visible;
           position: relative;
+          ${this._config.card_height != null ? `height: ${typeof this._config.card_height === 'number' ? this._config.card_height + 'px' : this._config.card_height}; box-sizing: border-box;` : ''}
         }
 
         .header {
@@ -537,6 +539,7 @@ class OblamatikCard extends HTMLElement {
       entity_number_flow: "number.flow_rate_192.168.1.36",
       min_temp: 20, max_temp: 60,
       min_flow: 0,  max_flow: 10,
+      // card_height: 400,   // optional – fixed card height: number (px) or CSS string e.g. "50vh"
     };
   }
 }
