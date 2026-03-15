@@ -49,21 +49,18 @@ A modern, minimalist **Lovelace custom card** for Home Assistant to control **Ob
 
 ### Minimal (via HA entities)
 
-> **Note:** Entity IDs include the device IP with dots replaced by underscores.
-> For a device at `192.168.1.36`, the entity IDs look like:
-> `switch.oblamatik_192_168_1_36_water_flow`
->
-> Check your exact entity names in **Developer Tools → States** (filter by `oblamatik`).
+> **Note:** Check your exact entity names in **Developer Tools → States** (filter by `oblamatik`).
+> Entity IDs may contain dots (e.g. `switch.water_flow_192.168.1.36`) – always wrap them in quotes in YAML.
 
 ```yaml
 type: custom:oblamatik-card
 name: My Bath
-entity_switch: switch.oblamatik_192_168_1_36_water_flow
-entity_temperature: sensor.oblamatik_192_168_1_36_temperature
-entity_flow: sensor.oblamatik_192_168_1_36_flow_rate
-entity_drain: binary_sensor.oblamatik_192_168_1_36_bath_drain
-entity_number_temp: number.oblamatik_192_168_1_36_temperature
-entity_number_flow: number.oblamatik_192_168_1_36_flow_rate
+entity_switch: "switch.water_flow_192.168.1.36"
+entity_temperature: "sensor.temperature_192.168.1.36"
+entity_flow: "sensor.flow_rate_192.168.1.36"
+entity_drain: "binary_sensor.bath_drain_192.168.1.36"
+entity_number_temp: "number.temperature_192.168.1.36"
+entity_number_flow: "number.flow_rate_192.168.1.36"
 ```
 
 ### Full configuration
@@ -71,12 +68,12 @@ entity_number_flow: number.oblamatik_192_168_1_36_flow_rate
 ```yaml
 type: custom:oblamatik-card
 name: Bath Controller
-entity_switch: switch.oblamatik_192_168_1_36_water_flow
-entity_temperature: sensor.oblamatik_192_168_1_36_temperature
-entity_flow: sensor.oblamatik_192_168_1_36_flow_rate
-entity_drain: binary_sensor.oblamatik_192_168_1_36_bath_drain
-entity_number_temp: number.oblamatik_192_168_1_36_temperature
-entity_number_flow: number.oblamatik_192_168_1_36_flow_rate
+entity_switch: "switch.water_flow_192.168.1.36"
+entity_temperature: "sensor.temperature_192.168.1.36"
+entity_flow: "sensor.flow_rate_192.168.1.36"
+entity_drain: "binary_sensor.bath_drain_192.168.1.36"
+entity_number_temp: "number.temperature_192.168.1.36"
+entity_number_flow: "number.flow_rate_192.168.1.36"
 min_temp: 20
 max_temp: 60
 min_flow: 0
