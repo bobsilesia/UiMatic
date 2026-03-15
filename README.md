@@ -12,21 +12,9 @@ A modern, minimalist **Lovelace custom card** for Home Assistant to control **Ob
 
 ## Preview
 
-```
-┌─────────────────────────────────────┐
-│  Bath Controller               ●    │
-│                                     │
-│  ╭──────╮   ╭──╮   ╭──────╮        │
-│  │ TEMP │   │💧│   │ FLOW │        │
-│  │  38° │   │  │   │  8.5 │        │
-│  ╰──────╯   ╰──╯   ╰──────╯        │
-│  ▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░        │
-│                                     │
-│  ╭─────────────────────────╮        │
-│  │  ⊙  Drain               │        │
-│  ╰─────────────────────────╯        │
-└─────────────────────────────────────┘
-```
+<p align="center">
+  <img src="preview.png" alt="UiMatic Card Preview" width="420" />
+</p>
 
 **Features:**
 - 🌡️ Temperature dial (arc slider, 20–60°C)
