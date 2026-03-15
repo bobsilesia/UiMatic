@@ -453,9 +453,20 @@ class OblamatikCard extends HTMLElement {
 
   // ── Commands ──────────────────────────────────────────────────────────────
 
+  _slugifyEntityId(entityId) {
+    // HA entity_id format: domain.object_id
+    // object_id cannot contain dots – they must be replaced with underscores
+    if (!entityId || !entityId.includes(".")) return entityId;
+    const dotIndex = entityId.indexOf(".");
+    const domain = entityId.substring(0, dotIndex);
+    const objectId = entityId.substring(dotIndex + 1).replace(/\./g, "_");
+    return `${domain}.${objectId}`;
+  }
+
   _callService(domain, service, entityId, serviceData = {}) {
-    // Use target.entity_id (HA 2022+) to avoid validation errors with entity IDs
-    this._hass.callService(domain, service, serviceData, { entity_id: entityId });
+    // Slugify entity_id: replace dots in object_id with underscores
+    const safeEntityId = this._slugifyEntityId(entityId);
+    this._hass.callService(domain, service, serviceData, { entity_id: safeEntityId });
   }
 
   _toggleWater() {
