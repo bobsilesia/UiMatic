@@ -51,32 +51,31 @@ A modern, minimalist **Lovelace custom card** for Home Assistant to control **Ob
 
 Go to **Developer Tools → States** and filter by `oblamatik`.
 
-Your entity IDs will look like:
+Your entity IDs will look like (replace `192.168.1.36` with your device IP):
 ```
-switch.oblamatik_192_168_1_36_water_flow
-number.oblamatik_192_168_1_36_temperature
-number.oblamatik_192_168_1_36_flow_rate
-binary_sensor.oblamatik_192_168_1_36_bath_drain
-sensor.oblamatik_192_168_1_36_temperature
-sensor.oblamatik_192_168_1_36_flow_rate
+switch.water_flow_192.168.1.36
+sensor.temperature_192.168.1.36
+sensor.flow_rate_192.168.1.36
+binary_sensor.bath_drain_192.168.1.36
+number.temperature_192.168.1.36
+number.flow_rate_192.168.1.36
 ```
 
-> **Note:** IP address dots are replaced with underscores in entity IDs.
-> Device at `192.168.1.36` → entities contain `192_168_1_36`.
+> **Note:** The card automatically handles entity IDs with dots in the IP address.
 
 ### Step 2 – Add the card
 
-In Lovelace dashboard, add a **Manual card** with this YAML (replace IP part with yours):
+In Lovelace dashboard, add a **Manual card** with this YAML (replace `192.168.1.36` with your device IP):
 
 ```yaml
 type: custom:oblamatik-card
 name: Bath Controller
-entity_switch: switch.oblamatik_192_168_1_36_water_flow
-entity_temperature: sensor.oblamatik_192_168_1_36_temperature
-entity_flow: sensor.oblamatik_192_168_1_36_flow_rate
-entity_drain: binary_sensor.oblamatik_192_168_1_36_bath_drain
-entity_number_temp: number.oblamatik_192_168_1_36_temperature
-entity_number_flow: number.oblamatik_192_168_1_36_flow_rate
+entity_switch: switch.water_flow_192.168.1.36
+entity_temperature: sensor.temperature_192.168.1.36
+entity_flow: sensor.flow_rate_192.168.1.36
+entity_drain: binary_sensor.bath_drain_192.168.1.36
+entity_number_temp: number.temperature_192.168.1.36
+entity_number_flow: number.flow_rate_192.168.1.36
 min_temp: 20
 max_temp: 60
 min_flow: 0
