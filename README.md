@@ -13,97 +13,100 @@ A modern, minimalist **Lovelace custom card** for Home Assistant to control **Ob
 ## Preview
 
 <p align="center">
-  <img src="preview.png" alt="UiMatic Card Preview" width="420" />
+  <img src="https://raw.githubusercontent.com/bobsilesia/UiMatic/main/preview.png" alt="UiMatic Card Preview" width="420" />
 </p>
 
 **Features:**
-- 🌡️ Temperature dial (arc slider, 20–60°C)
+- 🌡️ Temperature arc dial (20–60°C)
 - 💧 Water ON/OFF button with ripple animation
-- 🌊 Flow rate dial (arc slider, 0–20 L/min)
+- 🌊 Flow rate arc dial (0–10 L/min)
 - 🔵 Drain open/close toggle
 - 🔔 Toast notifications on action
-- 📡 Works via HA entities **or** direct device IP
 
 ---
 
 ## Installation
 
 ### HACS (recommended)
-1. Add this repository as a **Custom Repository** in HACS → Frontend
-2. Install **UiMatic**
-3. Restart Home Assistant
+
+1. In HACS, click **⋮ → Custom repositories**
+2. Add URL: `https://github.com/bobsilesia/UiMatic` → Category: **Dashboard**
+3. Click **Download**
+4. Hard refresh browser: `Ctrl+Shift+R` / `Cmd+Shift+R`
 
 ### Manual
-1. Copy `oblamatik-card.js` to `/config/www/`
-2. Add to Lovelace resources:
-   ```yaml
-   resources:
-     - url: /local/oblamatik-card.js
-       type: module
-   ```
-3. Restart Home Assistant
+
+1. Download `oblamatik-card.js` from [latest release](https://github.com/bobsilesia/UiMatic/releases/latest)
+2. Copy to `/config/www/oblamatik-card.js`
+3. In HA go to **Settings → Dashboards → Resources** → Add resource:
+   - URL: `/local/oblamatik-card.js`
+   - Type: **JavaScript module**
+4. Restart Home Assistant
 
 ---
 
 ## Configuration
 
-### Minimal (via HA entities)
+### Step 1 – Find your entity IDs
 
-> **Note:** Check your exact entity names in **Developer Tools → States** (filter by `oblamatik`).
-> Entity IDs may contain dots (e.g. `switch.water_flow_192.168.1.36`) – always wrap them in quotes in YAML.
+Go to **Developer Tools → States** and filter by `oblamatik`.
 
-```yaml
-type: custom:oblamatik-card
-name: My Bath
-entity_switch: "switch.water_flow_192.168.1.36"
-entity_temperature: "sensor.temperature_192.168.1.36"
-entity_flow: "sensor.flow_rate_192.168.1.36"
-entity_drain: "binary_sensor.bath_drain_192.168.1.36"
-entity_number_temp: "number.temperature_192.168.1.36"
-entity_number_flow: "number.flow_rate_192.168.1.36"
+Your entity IDs will look like:
+```
+switch.oblamatik_192_168_1_36_water_flow
+number.oblamatik_192_168_1_36_temperature
+number.oblamatik_192_168_1_36_flow_rate
+binary_sensor.oblamatik_192_168_1_36_bath_drain
+sensor.oblamatik_192_168_1_36_temperature
+sensor.oblamatik_192_168_1_36_flow_rate
 ```
 
-### Full configuration
+> **Note:** IP address dots are replaced with underscores in entity IDs.
+> Device at `192.168.1.36` → entities contain `192_168_1_36`.
+
+### Step 2 – Add the card
+
+In Lovelace dashboard, add a **Manual card** with this YAML (replace IP part with yours):
 
 ```yaml
 type: custom:oblamatik-card
 name: Bath Controller
-entity_switch: "switch.water_flow_192.168.1.36"
-entity_temperature: "sensor.temperature_192.168.1.36"
-entity_flow: "sensor.flow_rate_192.168.1.36"
-entity_drain: "binary_sensor.bath_drain_192.168.1.36"
-entity_number_temp: "number.temperature_192.168.1.36"
-entity_number_flow: "number.flow_rate_192.168.1.36"
+entity_switch: switch.oblamatik_192_168_1_36_water_flow
+entity_temperature: sensor.oblamatik_192_168_1_36_temperature
+entity_flow: sensor.oblamatik_192_168_1_36_flow_rate
+entity_drain: binary_sensor.oblamatik_192_168_1_36_bath_drain
+entity_number_temp: number.oblamatik_192_168_1_36_temperature
+entity_number_flow: number.oblamatik_192_168_1_36_flow_rate
 min_temp: 20
 max_temp: 60
 min_flow: 0
 max_flow: 10
 ```
 
-### Configuration options
+---
+
+## Configuration options
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
 | `name` | string | `Bath Controller` | Card title |
 | `entity_switch` | entity | — | Switch entity for water on/off |
-| `entity_temperature` | entity | — | Sensor entity for current temperature |
-| `entity_flow` | entity | — | Sensor entity for current flow rate |
-| `entity_drain` | entity | — | Switch entity for drain |
+| `entity_temperature` | entity | — | Sensor for current temperature |
+| `entity_flow` | entity | — | Sensor for current flow rate |
+| `entity_drain` | entity | — | Binary sensor / switch for drain |
 | `entity_number_temp` | entity | — | Number entity to set target temperature |
 | `entity_number_flow` | entity | — | Number entity to set target flow |
 | `min_temp` | number | `20` | Minimum temperature (°C) |
 | `max_temp` | number | `60` | Maximum temperature (°C) |
 | `min_flow` | number | `0` | Minimum flow (L/min) |
-| `max_flow` | number | `20` | Maximum flow (L/min) |
-| `host` | string | — | Device IP (direct API mode) |
-| `port` | number | `80` | Device port (direct API mode) |
+| `max_flow` | number | `10` | Maximum flow (L/min) |
 
 ---
 
 ## Compatibility
 
-- Home Assistant 2025.2+
-- Oblamatik integration ([bobsilesia/oblamatik](https://github.com/bobsilesia/oblamatik))
+- Home Assistant 2022.6+
+- [Oblamatik integration](https://github.com/bobsilesia/oblamatik) required
 - KWC ZOE touch light PRO
 - Viega Multiplex Trio E
 - Crosswater Digital
