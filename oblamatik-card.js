@@ -1,5 +1,5 @@
 /**
- * UiMatic – Oblamatik Lovelace Card v0.4.0
+ * UiMatic – Oblamatik Lovelace Card v0.4.1
  * Modern, minimalist bath controller UI for Home Assistant
  * https://github.com/bobsilesia/UiMatic
  */
@@ -122,6 +122,10 @@ class OblamatikCard extends HTMLElement {
           box-shadow: 0 8px 32px rgba(0,0,0,0.4);
           overflow: visible;
           position: relative;
+          display: flex;
+          flex-direction: column;
+          container-type: inline-size;
+          container-name: uimatic-card;
           ${this._config.card_height != null ? `height: ${typeof this._config.card_height === 'number' ? this._config.card_height + 'px' : this._config.card_height}; box-sizing: border-box;` : ''}
         }
 
@@ -138,22 +142,30 @@ class OblamatikCard extends HTMLElement {
 
         .controls {
           display: flex; gap: 16px; justify-content: center;
-          align-items: flex-start; margin-bottom: 24px;
+          align-items: center;
+          flex: 1;
+          min-height: 0;
+          margin-bottom: 24px;
         }
 
         .dial-wrapper { display: flex; flex-direction: column; align-items: center; gap: 8px; flex: 1; }
-        .dial-label { font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 1.2px; color: #6b7a8d; }
-        .dial-container { position: relative; width: 110px; height: 110px; cursor: grab; touch-action: none; }
+        .dial-label { font-size: clamp(9px, 2.5cqw, 11px); font-weight: 500; text-transform: uppercase; letter-spacing: 1.2px; color: #6b7a8d; }
+        .dial-container {
+          position: relative;
+          width: clamp(90px, 28cqw, 150px);
+          height: clamp(90px, 28cqw, 150px);
+          cursor: grab; touch-action: none;
+        }
         .dial-container:active { cursor: grabbing; }
-        .dial-svg { width: 110px; height: 110px; display: block; }
+        .dial-svg { width: 100%; height: 100%; display: block; }
         .dial-track { fill: none; stroke: #1e2535; stroke-width: 8; stroke-linecap: round; }
         .dial-fill  { fill: none; stroke-width: 8; stroke-linecap: round; }
         .dial-center {
           position: absolute; top: 50%; left: 50%;
           transform: translate(-50%, -50%); text-align: center; pointer-events: none;
         }
-        .dial-value { font-size: 20px; font-weight: 700; color: #e8f0fe; line-height: 1; }
-        .dial-unit  { font-size: 9px; color: #6b7a8d; margin-top: 2px; }
+        .dial-value { font-size: clamp(16px, 5cqw, 26px); font-weight: 700; color: #e8f0fe; line-height: 1; }
+        .dial-unit  { font-size: clamp(8px, 2cqw, 11px); color: #6b7a8d; margin-top: 2px; }
 
         .temp-bar {
           width: 100%; height: 3px; border-radius: 2px;
@@ -167,18 +179,20 @@ class OblamatikCard extends HTMLElement {
 
         .water-btn-wrapper { display: flex; flex-direction: column; align-items: center; gap: 10px; }
         .water-btn {
-          width: 76px; height: 76px; border-radius: 50%; border: none;
+          width: clamp(62px, 18cqw, 92px);
+          height: clamp(62px, 18cqw, 92px);
+          border-radius: 50%; border: none;
           background: linear-gradient(145deg, #1e2535, #161b27);
           box-shadow: 6px 6px 16px rgba(0,0,0,0.5), -4px -4px 12px rgba(255,255,255,0.03), inset 0 0 0 2px #252d3d;
           cursor: pointer; display: flex; align-items: center; justify-content: center;
-          transition: all 0.3s ease; position: relative; overflow: hidden; margin-top: 18px;
+          transition: all 0.3s ease; position: relative; overflow: hidden;
         }
         .water-btn:active { transform: scale(0.94); }
         .water-btn.on {
           background: linear-gradient(145deg, #0d4f7a, #0a3d5e);
           box-shadow: 6px 6px 16px rgba(0,0,0,0.5), inset 0 0 0 2px #1a6fa0, 0 0 22px rgba(64,196,255,0.25);
         }
-        .water-btn svg { width: 30px; height: 30px; }
+        .water-btn svg { width: clamp(24px, 7cqw, 34px); height: clamp(24px, 7cqw, 34px); }
         .icon-off { color: #3a4a5c; }
         .water-btn.on .icon-off { display: none; }
         .icon-on { display: none; color: #40c4ff; }
