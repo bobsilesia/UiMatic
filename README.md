@@ -100,6 +100,7 @@ max_flow: 10
 | `min_flow` | number | `0` | Minimum flow (L/min) |
 | `max_flow` | number | `10` | Maximum flow (L/min) |
 | `card_height` | number \| string | — | Card height in px (e.g. `400`) or any CSS value (e.g. `"50vh"`, `"500px"`). If omitted, the card uses its natural height. |
+| `layout` | string | `classic` | UI layout: `"classic"` – arc dial knobs; `"modern"` – iOS-style drum pickers (scroll wheel). |
 
 ---
 
@@ -124,6 +125,26 @@ card_height: "50vh"
 ```
 
 > **Tip:** When `card_height` is set, the card applies `box-sizing: border-box` so padding is included in the specified height.
+
+---
+
+## Choosing a layout
+
+The card supports two visual layouts:
+
+### `classic` (default)
+Arc dial knobs – drag around the ring to set temperature or flow. Backward-compatible with all existing configurations.
+```yaml
+layout: "classic"
+```
+
+### `modern`
+iOS-style drum pickers – swipe up/down to scroll through values. Clean, minimal, phone-friendly.
+```yaml
+layout: "modern"
+```
+
+> **Tip:** All other options (`card_height`, entity IDs, min/max ranges) work identically in both layouts.
 
 ---
 
