@@ -13,15 +13,16 @@ A modern, minimalist **Lovelace custom card** for Home Assistant to control **Ob
 ## Preview
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/bobsilesia/UiMatic/main/preview.png" alt="UiMatic Card Preview" width="420" />
+  <img src="https://raw.githubusercontent.com/bobsilesia/UiMatic/main/preview-layouts.png" alt="UiMatic – classic and modern layout preview" width="720" />
 </p>
 
 **Features:**
-- 🌡️ Temperature arc dial (20–60°C)
+- 🌡️ Temperature control (20–60°C) – arc dial or drum picker
 - 💧 Water ON/OFF button with ripple animation
-- 🌊 Flow rate arc dial (0–10 L/min)
+- 🌊 Flow rate control (0–10 L/min) – arc dial or drum picker
 - 🔵 Drain open/close toggle
 - 🔔 Toast notifications on action
+- 🎨 Two layouts: `classic` (arc dials) and `modern` (iOS drum pickers)
 
 ---
 
