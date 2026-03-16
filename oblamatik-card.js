@@ -38,8 +38,8 @@ class OblamatikCard extends HTMLElement {
       entity_drain:       config.entity_drain        || null,
       entity_number_temp: config.entity_number_temp  || null,
       entity_number_flow: config.entity_number_flow  || null,
-      min_temp:           config.min_temp            != null ? config.min_temp : 20,
-      max_temp:           config.max_temp            != null ? config.max_temp : 60,
+      min_temp:           config.min_temp            != null ? config.min_temp : 10,
+      max_temp:           config.max_temp            != null ? config.max_temp : 45,
       min_flow:           config.min_flow            != null ? config.min_flow : 0,
       max_flow:           config.max_flow            != null ? config.max_flow : 10,
       card_height:        config.card_height         != null ? config.card_height : null,
@@ -745,7 +745,7 @@ class OblamatikCard extends HTMLElement {
       entity_drain:       "binary_sensor.bath_drain_192.168.1.36",
       entity_number_temp: "number.temperature_192.168.1.36",
       entity_number_flow: "number.flow_rate_192.168.1.36",
-      min_temp: 20, max_temp: 60,
+      min_temp: 10, max_temp: 45,
       min_flow: 0,  max_flow: 10,
       layout: "classic",           // "classic" (arc dials) | "modern" (drum pickers)
       // card_height: 400,          // optional – fixed card height: number (px) or CSS string e.g. "50vh"

@@ -17,7 +17,7 @@ A modern, minimalist **Lovelace custom card** for Home Assistant to control **Ob
 </p>
 
 **Features:**
-- 🌡️ Temperature control (20–60°C) – arc dial or drum picker
+- 🌡️ Temperature control (10–45°C, safe for humans) – arc dial or drum picker
 - 💧 Water ON/OFF button with ripple animation
 - 🌊 Flow rate control (0–10 L/min) – arc dial or drum picker
 - 🔵 Drain open/close toggle
@@ -77,8 +77,8 @@ entity_flow: sensor.flow_rate_192.168.1.36
 entity_drain: binary_sensor.bath_drain_192.168.1.36
 entity_number_temp: number.temperature_192.168.1.36
 entity_number_flow: number.flow_rate_192.168.1.36
-min_temp: 20
-max_temp: 60
+min_temp: 10
+max_temp: 45
 min_flow: 0
 max_flow: 10
 ```
@@ -96,8 +96,8 @@ max_flow: 10
 | `entity_drain` | entity | — | Binary sensor / switch for drain |
 | `entity_number_temp` | entity | — | Number entity to set target temperature |
 | `entity_number_flow` | entity | — | Number entity to set target flow |
-| `min_temp` | number | `20` | Minimum temperature (°C) |
-| `max_temp` | number | `60` | Maximum temperature (°C) |
+| `min_temp` | number | `10` | Minimum temperature (°C) |
+| `max_temp` | number | `45` | Maximum temperature (°C, safe upper limit for human comfort) |
 | `min_flow` | number | `0` | Minimum flow (L/min) |
 | `max_flow` | number | `10` | Maximum flow (L/min) |
 | `card_height` | number \| string | — | Card height in px (e.g. `400`) or any CSS value (e.g. `"50vh"`, `"500px"`). If omitted, the card uses its natural height. |
