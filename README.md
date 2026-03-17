@@ -128,7 +128,10 @@ max_flow: 10
 | `max_temp` | number | `45` | Maximum temperature (°C, safe upper limit for human comfort) |
 | `min_flow` | number | `0` | Minimum flow (L/min) |
 | `max_flow` | number | `10` | Maximum flow (L/min) |
-| `card_height` | number \| string | — | Card height in px (e.g. `400`) or any CSS value (e.g. `"50vh"`, `"500px"`). If omitted, the card uses its natural height. |
+| `card_height`  | number \| string | —          | Card height in px (e.g. `400`) or any CSS value (e.g. `"50vh"`, `"500px"`). If omitted, the card uses its natural height. |
+| `card_color`   | string           | `#1a1f2e`  | Card background color (hex or CSS color). Buttons inherit this color for neumorphic depth. |
+| `text_color`   | string           | `#6b7a8d`  | Color of labels and header title. |
+| `accent_color` | string           | `#40c4ff`  | Accent color used for active states (water ON, drain closed, status dot, glow). |
 | `layout` | string | `classic` | UI layout: `"classic"` – arc dial knobs; `"modern"` – iOS-style drum pickers (scroll wheel). |
 
 ---

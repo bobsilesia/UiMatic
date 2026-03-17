@@ -43,6 +43,9 @@ class OblamatikCard extends HTMLElement {
       min_flow:           config.min_flow            != null ? config.min_flow : 0,
       max_flow:           config.max_flow            != null ? config.max_flow : 10,
       card_height:        config.card_height         != null ? config.card_height : null,
+      card_color:         config.card_color          || null,
+      text_color:         config.text_color          || null,
+      accent_color:       config.accent_color        || null,
       layout:             config.layout === "modern" ? "modern" : "classic",
     };
     this._rendered = false;
@@ -156,15 +159,24 @@ class OblamatikCard extends HTMLElement {
   // ── Base CSS (shared) ─────────────────────────────────────────────────────
 
   _baseCSS() {
-    const { card_height } = this._config;
+    const { card_height, card_color, text_color, accent_color } = this._config;
     const heightRule = card_height != null
       ? `height: ${typeof card_height === "number" ? card_height + "px" : card_height}; box-sizing: border-box;`
       : "";
+    const BG     = card_color   || "#1a1f2e";
+    const TEXT   = text_color   || "#6b7a8d";
+    const ACCENT = accent_color || "#40c4ff";
     return `
-      :host { display: block; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+      :host {
+        display: block;
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        --card-bg: ${BG};
+        --card-text: ${TEXT};
+        --accent: ${ACCENT};
+      }
 
       ha-card, .card {
-        background: linear-gradient(145deg, #1a1f2e 0%, #0f1318 100%) !important;
+        background: linear-gradient(145deg, ${BG} 0%, #0f1318 100%) !important;
         border-radius: 24px !important;
         padding: 24px;
         color: #fff;
@@ -183,12 +195,12 @@ class OblamatikCard extends HTMLElement {
         display: flex; align-items: center;
         justify-content: space-between; margin-bottom: 28px;
       }
-      .header-title { font-size: 18px; font-weight: 600; color: #6b7a8d; letter-spacing: 0.3px; }
+      .header-title { font-size: 18px; font-weight: 600; color: var(--card-text); letter-spacing: 0.3px; }
       .status-dot {
         width: 8px; height: 8px; border-radius: 50%; background: #3a4050;
         transition: background 0.4s ease, box-shadow 0.4s ease;
       }
-      .status-dot.active { background: #40c4ff; box-shadow: 0 0 10px rgba(64,196,255,0.6); }
+      .status-dot.active { background: var(--accent); box-shadow: 0 0 10px var(--accent); }
 
       .controls {
         display: flex; align-items: center; justify-content: space-between;
@@ -200,7 +212,7 @@ class OblamatikCard extends HTMLElement {
       .drain-round-btn {
         width: clamp(46px, 13.5cqw, 66px); height: clamp(46px, 13.5cqw, 66px);
         border-radius: 50%; border: none;
-        background: #1a1f2e;
+        background: var(--card-bg);
         box-shadow: -4px -4px 9px rgba(255,255,255,0.05), 5px 5px 13px rgba(0,0,0,0.65);
         cursor: pointer; display: flex; align-items: center; justify-content: center;
         transition: box-shadow 0.25s ease, color 0.25s ease;
@@ -210,17 +222,16 @@ class OblamatikCard extends HTMLElement {
         box-shadow: inset -2px -2px 5px rgba(255,255,255,0.04), inset 3px 3px 8px rgba(0,0,0,0.65);
       }
       .drain-round-btn.closed {
-        color: #40c4ff;
-        box-shadow: inset -2px -2px 5px rgba(255,255,255,0.04), inset 3px 3px 8px rgba(0,0,0,0.65), 0 0 10px rgba(64,196,255,0.18);
+        color: var(--accent);
+        box-shadow: inset -2px -2px 5px rgba(255,255,255,0.04), inset 3px 3px 8px rgba(0,0,0,0.65), 0 0 10px var(--accent);
       }
       .drain-round-btn svg { width: clamp(18px, 5.3cqw, 24px); height: clamp(18px, 5.3cqw, 24px); }
-      .drain-round-label { font-size: 9px; font-weight: 500; text-transform: uppercase; letter-spacing: 1.2px; color: #6b7a8d; }
 
       /* ── Water wide button – neumorphic pill / Bottom row ── */
       .bottom-row { display: flex; gap: 10px; }
       .water-wide-btn {
         flex: 1; height: 50px; border-radius: 25px; border: none;
-        background: #1a1f2e;
+        background: var(--card-bg);
         box-shadow: -4px -4px 9px rgba(255,255,255,0.05), 5px 5px 13px rgba(0,0,0,0.65);
         cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
         color: #4a5568; font-size: 12px; font-weight: 500; letter-spacing: 0.3px;
@@ -231,8 +242,8 @@ class OblamatikCard extends HTMLElement {
         box-shadow: inset -2px -2px 5px rgba(255,255,255,0.04), inset 3px 3px 8px rgba(0,0,0,0.65);
       }
       .water-wide-btn.on {
-        box-shadow: inset -2px -2px 5px rgba(255,255,255,0.04), inset 3px 3px 8px rgba(0,0,0,0.65), 0 0 14px rgba(64,196,255,0.2);
-        color: #40c4ff;
+        box-shadow: inset -2px -2px 5px rgba(255,255,255,0.04), inset 3px 3px 8px rgba(0,0,0,0.65), 0 0 14px var(--accent);
+        color: var(--accent);
       }
       .water-wide-btn svg { width: 17px; height: 17px; flex-shrink: 0; }
       .water-wide-btn .ripple-ring { position: absolute; border-radius: 50%; border: 2px solid rgba(64,196,255,0.25); pointer-events: none; }
@@ -263,6 +274,13 @@ class OblamatikCard extends HTMLElement {
     return `
       .dial-wrapper { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; min-width: 0; }
       .dial-label { font-size: clamp(9px, 2.5cqw, 11px); font-weight: 500; text-transform: uppercase; letter-spacing: 1.2px; color: #6b7a8d; white-space: nowrap; }
+      .dial-well {
+        border-radius: 50%;
+        padding: clamp(6px, 2cqw, 10px);
+        background: var(--card-bg, #1a1f2e);
+        box-shadow: inset -3px -3px 7px rgba(255,255,255,0.05), inset 4px 4px 12px rgba(0,0,0,0.65);
+        display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      }
       .dial-container {
         position: relative;
         width: clamp(80px, 24cqw, 130px); height: clamp(80px, 24cqw, 130px);
@@ -287,6 +305,7 @@ class OblamatikCard extends HTMLElement {
     return `
       <div class="dial-wrapper">
         <span class="dial-label">Temperature</span>
+        <div class="dial-well">
         <div class="dial-container" id="tempDial">
           <svg class="dial-svg" viewBox="0 0 110 110">
             <defs>
@@ -307,12 +326,14 @@ class OblamatikCard extends HTMLElement {
             <div class="dial-unit">°C</div>
           </div>
         </div>
+        </div>
       </div>
 
       ${this._waterBtnHTML()}
 
       <div class="dial-wrapper">
         <span class="dial-label">Flow</span>
+        <div class="dial-well">
         <div class="dial-container" id="flowDial">
           <svg class="dial-svg" viewBox="0 0 110 110">
             <defs>
@@ -332,6 +353,7 @@ class OblamatikCard extends HTMLElement {
             <div class="dial-unit">L/min</div>
           </div>
         </div>
+        </div>
       </div>
     `;
   }
@@ -345,7 +367,8 @@ class OblamatikCard extends HTMLElement {
       .picker {
         position: relative; width: 100%; height: 160px;
         overflow: hidden; cursor: ns-resize; touch-action: none;
-        border-radius: 16px; background: #141820; border: 1px solid #1e2535;
+        border-radius: 16px; background: #141820;
+        box-shadow: inset -3px -3px 7px rgba(255,255,255,0.04), inset 4px 4px 12px rgba(0,0,0,0.7);
       }
       .picker::before, .picker::after {
         content: ''; position: absolute; left: 0; right: 0; height: 50px; z-index: 2; pointer-events: none;
@@ -448,7 +471,6 @@ class OblamatikCard extends HTMLElement {
             <line x1="15.54" y1="10.44" x2="19.07" y2="8.82"/>
           </svg>
         </button>
-        <span class="drain-round-label" id="drainRoundLabel">Drain Open</span>
       </div>
     `;
   }
@@ -693,10 +715,8 @@ class OblamatikCard extends HTMLElement {
   }
 
   _updateDrainBtn() {
-    const btn   = this.shadowRoot.getElementById("drainRoundBtn");
-    const label = this.shadowRoot.getElementById("drainRoundLabel");
-    if (btn)   btn.classList.toggle("closed", !this._drainOpen);
-    if (label) label.textContent = this._drainOpen ? "Drain Open" : "Drain Closed";
+    const btn = this.shadowRoot.getElementById("drainRoundBtn");
+    if (btn) btn.classList.toggle("closed", !this._drainOpen);
   }
 
   // ── Commands ──────────────────────────────────────────────────────────────
@@ -777,7 +797,10 @@ class OblamatikCard extends HTMLElement {
       min_temp: 10, max_temp: 45,
       min_flow: 0,  max_flow: 10,
       layout: "classic",           // "classic" (arc dials) | "modern" (drum pickers)
-      // card_height: 400,          // optional – fixed card height: number (px) or CSS string e.g. "50vh"
+      // card_height: 400,          // optional – fixed card height
+      // card_color:  "#1a1f2e",    // optional – card background color
+      // text_color:  "#6b7a8d",    // optional – label/title text color
+      // accent_color:"#40c4ff",    // optional – accent (active states, glow)
     };
   }
 }

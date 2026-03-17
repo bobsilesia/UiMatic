@@ -87,16 +87,25 @@
       align-items: center;
       justify-content: space-between;
       gap: 10px;
-      flex: 1;           /* stretch to fill card – pushes bottom-row down */
+      flex: 1;
       min-height: 0;
     }
 
     /* ══ CLASSIC dials ══ */
     .dial-wrapper { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; min-width: 0; }
     .dial-label { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.3px; color: #6b7a8d; white-space: nowrap; }
+
+    /* neumorphic well for classic dials */
+    .dial-well {
+      border-radius: 50%;
+      padding: 9px;
+      background: #1a1f2e;
+      box-shadow: inset -3px -3px 7px rgba(255,255,255,0.05), inset 4px 4px 12px rgba(0,0,0,0.65);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
     .dial-container {
       position: relative;
-      width: 88px; height: 88px;
+      width: 80px; height: 80px;
       cursor: grab; touch-action: none; flex-shrink: 0;
     }
     .dial-container:active { cursor: grabbing; }
@@ -107,7 +116,7 @@
       position: absolute; top: 50%; left: 50%;
       transform: translate(-50%,-50%); text-align: center; pointer-events: none;
     }
-    .dial-value { font-size: 22px; font-weight: 700; color: #e8f0fe; line-height: 1; }
+    .dial-value { font-size: 20px; font-weight: 700; color: #e8f0fe; line-height: 1; }
     .dial-unit  { font-size: 9px; color: #6b7a8d; margin-top: 2px; }
 
     /* ══ MODERN pickers ══ */
@@ -116,7 +125,8 @@
     .picker {
       position: relative; width: 100%; height: 140px;
       overflow: hidden; cursor: ns-resize; touch-action: none;
-      border-radius: 14px; background: #141820; border: 1px solid #1e2535;
+      border-radius: 14px; background: #141820;
+      box-shadow: inset -3px -3px 7px rgba(255,255,255,0.04), inset 4px 4px 12px rgba(0,0,0,0.7);
     }
     .picker::before, .picker::after {
       content: ''; position: absolute; left: 0; right: 0; height: 44px; z-index: 2; pointer-events: none;
@@ -143,9 +153,9 @@
     .picker-temp .picker-item.active.hot  { color: #ef4444; }
     .picker-unit { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.2px; color: #6b7a8d; }
 
-    /* ══ Drain round button – neumorphic ══ */
+    /* ══ Drain round button – neumorphic (no label) ══ */
     .drain-round-wrapper {
-      display: flex; flex-direction: column; align-items: center; gap: 8px; flex-shrink: 0;
+      display: flex; flex-direction: column; align-items: center; flex-shrink: 0;
     }
     .drain-round-btn {
       width: 57px; height: 57px; border-radius: 50%; border: none;
@@ -163,7 +173,6 @@
       box-shadow: inset -2px -2px 5px rgba(255,255,255,0.04), inset 3px 3px 8px rgba(0,0,0,0.65), 0 0 10px rgba(64,196,255,0.18);
     }
     .drain-round-btn svg { width: 22px; height: 22px; }
-    .drain-round-label { font-size: 9px; font-weight: 500; text-transform: uppercase; letter-spacing: 1.2px; color: #6b7a8d; }
 
     /* ══ Water wide button – neumorphic pill ══ */
     .bottom-row { display: flex; gap: 10px; margin-top: 18px; flex-shrink: 0; }
@@ -256,28 +265,30 @@
         <!-- Temp dial -->
         <div class="dial-wrapper">
           <span class="dial-label">Temperature</span>
-          <div class="dial-container" id="c-tempDial">
-            <svg class="dial-svg" viewBox="0 0 110 110">
-              <defs>
-                <linearGradient id="c-tg" x1="100%" y1="0%" x2="0%" y2="0%">
-                  <stop offset="0%"   stop-color="#3b82f6"/>
-                  <stop offset="50%"  stop-color="#f59e0b"/>
-                  <stop offset="100%" stop-color="#ef4444"/>
-                </linearGradient>
-              </defs>
-              <g transform="rotate(-130 55 55)">
-                <circle class="dial-track" cx="55" cy="55" r="44" stroke-dasharray="199 77"/>
-                <circle class="dial-fill" id="c-tempArc" cx="55" cy="55" r="44" stroke="url(#c-tg)" stroke-dasharray="0 276"/>
-              </g>
-            </svg>
-            <div class="dial-center">
-              <div class="dial-value" id="c-tempVal">38</div>
-              <div class="dial-unit">°C</div>
+          <div class="dial-well">
+            <div class="dial-container" id="c-tempDial">
+              <svg class="dial-svg" viewBox="0 0 110 110">
+                <defs>
+                  <linearGradient id="c-tg" x1="100%" y1="0%" x2="0%" y2="0%">
+                    <stop offset="0%"   stop-color="#3b82f6"/>
+                    <stop offset="50%"  stop-color="#f59e0b"/>
+                    <stop offset="100%" stop-color="#ef4444"/>
+                  </linearGradient>
+                </defs>
+                <g transform="rotate(-130 55 55)">
+                  <circle class="dial-track" cx="55" cy="55" r="44" stroke-dasharray="199 77"/>
+                  <circle class="dial-fill" id="c-tempArc" cx="55" cy="55" r="44" stroke="url(#c-tg)" stroke-dasharray="0 276"/>
+                </g>
+              </svg>
+              <div class="dial-center">
+                <div class="dial-value" id="c-tempVal">38</div>
+                <div class="dial-unit">°C</div>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Drain round button (default open) -->
+        <!-- Drain round button (no label) -->
         <div class="drain-round-wrapper">
           <button class="drain-round-btn" id="c-drainBtn" aria-label="Toggle drain">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
@@ -294,28 +305,29 @@
               <line x1="15.54" y1="10.44" x2="19.07" y2="8.82"/>
             </svg>
           </button>
-          <span class="drain-round-label" id="c-drainLabel">Drain Open</span>
         </div>
 
         <!-- Flow dial -->
         <div class="dial-wrapper">
           <span class="dial-label">Flow</span>
-          <div class="dial-container" id="c-flowDial">
-            <svg class="dial-svg" viewBox="0 0 110 110">
-              <defs>
-                <linearGradient id="c-fg" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%"   stop-color="#1e40af"/>
-                  <stop offset="100%" stop-color="#40c4ff"/>
-                </linearGradient>
-              </defs>
-              <g transform="rotate(-130 55 55)">
-                <circle class="dial-track" cx="55" cy="55" r="44" stroke-dasharray="199 77"/>
-                <circle class="dial-fill" id="c-flowArc" cx="55" cy="55" r="44" stroke="url(#c-fg)" stroke-dasharray="0 276"/>
-              </g>
-            </svg>
-            <div class="dial-center">
-              <div class="dial-value" id="c-flowVal">5.0</div>
-              <div class="dial-unit">L/min</div>
+          <div class="dial-well">
+            <div class="dial-container" id="c-flowDial">
+              <svg class="dial-svg" viewBox="0 0 110 110">
+                <defs>
+                  <linearGradient id="c-fg" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%"   stop-color="#1e40af"/>
+                    <stop offset="100%" stop-color="#40c4ff"/>
+                  </linearGradient>
+                </defs>
+                <g transform="rotate(-130 55 55)">
+                  <circle class="dial-track" cx="55" cy="55" r="44" stroke-dasharray="199 77"/>
+                  <circle class="dial-fill" id="c-flowArc" cx="55" cy="55" r="44" stroke="url(#c-fg)" stroke-dasharray="0 276"/>
+                </g>
+              </svg>
+              <div class="dial-center">
+                <div class="dial-value" id="c-flowVal">5.0</div>
+                <div class="dial-unit">L/min</div>
+              </div>
             </div>
           </div>
         </div>
@@ -358,7 +370,7 @@
           <span class="picker-unit">°C</span>
         </div>
 
-        <!-- Drain round button (default open) -->
+        <!-- Drain round button (no label) -->
         <div class="drain-round-wrapper">
           <button class="drain-round-btn" id="m-drainBtn" aria-label="Toggle drain">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
@@ -375,7 +387,6 @@
               <line x1="15.54" y1="10.44" x2="19.07" y2="8.82"/>
             </svg>
           </button>
-          <span class="drain-round-label" id="m-drainLabel">Drain Open</span>
         </div>
 
         <!-- Flow picker -->
@@ -411,12 +422,9 @@
 <p class="demo-note">⬆⬇ drag pickers · drag arc dials · tap buttons to toggle</p>
 
 <script>
-// ══════════════════════════════════════════════
-//  Shared config
-// ══════════════════════════════════════════════
 const TEMP_MIN = 10, TEMP_MAX = 45, TEMP_STEP = 1,  TEMP_INIT = 38;
 const FLOW_MIN = 0,  FLOW_MAX = 10, FLOW_STEP = 0.5, FLOW_INIT = 5;
-const ARC_DEG  = 260;  // classic dial sweep in degrees
+const ARC_DEG  = 260;
 
 function buildValues(min, max, step) {
   const vals = [];
@@ -429,9 +437,6 @@ const FLOW_VALS = buildValues(FLOW_MIN, FLOW_MAX, FLOW_STEP);
 
 function tempColorClass(v) { return v < 30 ? 'cold' : v < 41 ? 'warm' : 'hot'; }
 
-// ══════════════════════════════════════════════
-//  Toast helper
-// ══════════════════════════════════════════════
 const toastTimers = {};
 function showToast(id, msg) {
   const t = document.getElementById(id);
@@ -442,9 +447,6 @@ function showToast(id, msg) {
   toastTimers[id] = setTimeout(() => t.classList.remove('show'), 2200);
 }
 
-// ══════════════════════════════════════════════
-//  Water wide button toggle
-// ══════════════════════════════════════════════
 function initWaterBtn(btnId, labelId, dotId, toastId) {
   let on = false;
   const btn   = document.getElementById(btnId);
@@ -459,28 +461,18 @@ function initWaterBtn(btnId, labelId, dotId, toastId) {
   });
 }
 
-// ══════════════════════════════════════════════
-//  Drain round button toggle (default: OPEN)
-// ══════════════════════════════════════════════
-function initDrainBtn(btnId, labelId, toastId) {
-  let open = true; // default: drain is OPEN
-  const btn   = document.getElementById(btnId);
-  const label = document.getElementById(labelId);
-  // start open
+/* Drain: no label – just toggle class */
+function initDrainBtn(btnId, toastId) {
+  let open = true;
+  const btn = document.getElementById(btnId);
   btn.classList.remove('closed');
-  label.textContent = 'Drain Open';
-
   btn.addEventListener('click', () => {
     open = !open;
     btn.classList.toggle('closed', !open);
-    label.textContent = open ? 'Drain Open' : 'Drain Closed';
     showToast(toastId, open ? '🟢 Drain open' : '🔴 Drain closed');
   });
 }
 
-// ══════════════════════════════════════════════
-//  Classic dial
-// ══════════════════════════════════════════════
 function initDial(dialId, arcId, valId, min, max, initVal, onCommit) {
   const dial  = document.getElementById(dialId);
   const arc   = document.getElementById(arcId);
@@ -498,7 +490,6 @@ function initDial(dialId, arcId, valId, min, max, initVal, onCommit) {
     valEl.textContent = Number.isInteger(v) ? v : v.toFixed(1);
     setArc((v - min) / (max - min));
   }
-
   function angleFromEvent(e) {
     const rect = dial.getBoundingClientRect();
     const cx = rect.left + rect.width  / 2;
@@ -511,33 +502,22 @@ function initDial(dialId, arcId, valId, min, max, initVal, onCommit) {
     const ratio = deg / ARC_DEG;
     const v = min + ratio * (max - min);
     const step = max === FLOW_MAX ? 0.5 : 1;
-    const snapped = Math.round(v / step) * step;
-    setValue(Math.max(min, Math.min(max, snapped)));
+    setValue(Math.max(min, Math.min(max, Math.round(v / step) * step)));
   }
 
   setValue(initVal);
-
-  dial.addEventListener('pointerdown', e => {
-    dragging = true; dial.setPointerCapture(e.pointerId);
-    applyAngle(angleFromEvent(e)); e.preventDefault();
-  });
+  dial.addEventListener('pointerdown', e => { dragging = true; dial.setPointerCapture(e.pointerId); applyAngle(angleFromEvent(e)); e.preventDefault(); });
   dial.addEventListener('pointermove', e => { if (dragging) applyAngle(angleFromEvent(e)); });
   dial.addEventListener('pointerup',   () => { if (dragging) { dragging = false; onCommit(current); } });
   dial.addEventListener('pointercancel', () => { dragging = false; });
 }
 
-// ══════════════════════════════════════════════
-//  Modern picker
-// ══════════════════════════════════════════════
 function initPicker(pickerId, listId, vals, initVal, isTemp, onCommit) {
   const picker = document.getElementById(pickerId);
   const list   = document.getElementById(listId);
   const ITEM_H = 40, PAD = 2, H = 140;
 
-  // populate
-  for (let i = 0; i < PAD; i++) {
-    const d = document.createElement('div'); d.className = 'picker-item'; list.appendChild(d);
-  }
+  for (let i = 0; i < PAD; i++) { const d = document.createElement('div'); d.className = 'picker-item'; list.appendChild(d); }
   vals.forEach((v, i) => {
     const d = document.createElement('div');
     d.className = 'picker-item';
@@ -546,96 +526,63 @@ function initPicker(pickerId, listId, vals, initVal, isTemp, onCommit) {
     d.textContent = v % 1 === 0 ? String(v) : v.toFixed(1);
     list.appendChild(d);
   });
-  for (let i = 0; i < PAD; i++) {
-    const d = document.createElement('div'); d.className = 'picker-item'; list.appendChild(d);
-  }
+  for (let i = 0; i < PAD; i++) { const d = document.createElement('div'); d.className = 'picker-item'; list.appendChild(d); }
 
   let currentOffset = 0, dragging = false, startY = 0, startIdx = 0;
-
   const idxToOffset = idx => H / 2 - (PAD + idx) * ITEM_H - ITEM_H / 2;
-  const offsetToIdx = off => {
-    const raw = (H / 2 - off - ITEM_H / 2) / ITEM_H - PAD;
-    return Math.round(Math.max(0, Math.min(vals.length - 1, raw)));
-  };
+  const offsetToIdx = off => Math.round(Math.max(0, Math.min(vals.length - 1, (H / 2 - off - ITEM_H / 2) / ITEM_H - PAD)));
 
   function updateHighlight(idx) {
     list.querySelectorAll('.picker-item[data-idx]').forEach(el => {
       const i = parseInt(el.dataset.idx);
       el.classList.remove('active', 'near', 'cold', 'warm', 'hot');
-      if (i === idx) {
-        el.classList.add('active');
-        if (el.dataset.color) el.classList.add(el.dataset.color);
-      } else if (Math.abs(i - idx) === 1) el.classList.add('near');
+      if (i === idx) { el.classList.add('active'); if (el.dataset.color) el.classList.add(el.dataset.color); }
+      else if (Math.abs(i - idx) === 1) el.classList.add('near');
     });
   }
-
   function applyOffset(offset, animate) {
     list.style.transition = animate ? 'transform 0.2s ease-out' : 'none';
     list.style.transform  = `translateY(${offset}px)`;
     currentOffset = offset;
     updateHighlight(offsetToIdx(offset));
   }
-
   function snapTo(idx) {
     const c = Math.max(0, Math.min(vals.length - 1, idx));
     applyOffset(idxToOffset(c), true);
     return c;
   }
 
-  const initIdx = vals.findIndex(v => Math.abs(v - initVal) < 0.001) || 0;
-  applyOffset(idxToOffset(Math.max(0, initIdx)), false);
+  applyOffset(idxToOffset(Math.max(0, vals.findIndex(v => Math.abs(v - initVal) < 0.001))), false);
 
-  picker.addEventListener('pointerdown', e => {
-    dragging = true; startY = e.clientY; startIdx = offsetToIdx(currentOffset);
-    list.style.transition = 'none'; picker.setPointerCapture(e.pointerId); e.preventDefault();
-  });
+  picker.addEventListener('pointerdown', e => { dragging = true; startY = e.clientY; startIdx = offsetToIdx(currentOffset); list.style.transition = 'none'; picker.setPointerCapture(e.pointerId); e.preventDefault(); });
   picker.addEventListener('pointermove', e => {
     if (!dragging) return;
     const newOff = idxToOffset(startIdx) + (e.clientY - startY);
-    const minOff = idxToOffset(vals.length - 1), maxOff = idxToOffset(0);
-    applyOffset(Math.max(minOff, Math.min(maxOff, newOff)), false);
+    applyOffset(Math.max(idxToOffset(vals.length - 1), Math.min(idxToOffset(0), newOff)), false);
   });
-  picker.addEventListener('pointerup', () => {
-    if (!dragging) return; dragging = false;
-    const idx = snapTo(offsetToIdx(currentOffset));
-    onCommit(vals[idx]);
-  });
+  picker.addEventListener('pointerup', () => { if (!dragging) return; dragging = false; onCommit(vals[snapTo(offsetToIdx(currentOffset))]); });
   picker.addEventListener('pointercancel', () => { dragging = false; snapTo(offsetToIdx(currentOffset)); });
 }
 
-// ══════════════════════════════════════════════
-//  Equalize card heights
-// ══════════════════════════════════════════════
 function equalizeHeights() {
   const cards = document.querySelectorAll('.card');
-  cards.forEach(c => { c.style.height = ''; }); // reset
+  cards.forEach(c => { c.style.height = ''; });
   const maxH = Math.max(...[...cards].map(c => c.offsetHeight));
   cards.forEach(c => c.style.height = maxH + 'px');
 }
 
-// ══════════════════════════════════════════════
-//  Init classic layout
-// ══════════════════════════════════════════════
-initDial('c-tempDial', 'c-tempArc', 'c-tempVal', TEMP_MIN, TEMP_MAX, TEMP_INIT,
-  v => showToast('c-toast', `🌡 ${v}°C`));
-initDial('c-flowDial', 'c-flowArc', 'c-flowVal', FLOW_MIN, FLOW_MAX, FLOW_INIT,
-  v => showToast('c-toast', `🌊 ${v} L/min`));
-initDrainBtn('c-drainBtn', 'c-drainLabel', 'c-toast');
+// Init classic
+initDial('c-tempDial', 'c-tempArc', 'c-tempVal', TEMP_MIN, TEMP_MAX, TEMP_INIT, v => showToast('c-toast', `🌡 ${v}°C`));
+initDial('c-flowDial', 'c-flowArc', 'c-flowVal', FLOW_MIN, FLOW_MAX, FLOW_INIT, v => showToast('c-toast', `🌊 ${v} L/min`));
+initDrainBtn('c-drainBtn', 'c-toast');
 initWaterBtn('c-waterBtn', 'c-waterLabel', 'c-statusDot', 'c-toast');
 
-// ══════════════════════════════════════════════
-//  Init modern layout
-// ══════════════════════════════════════════════
-initPicker('m-tempPicker', 'm-tempList', TEMP_VALS, TEMP_INIT, true,
-  v => showToast('m-toast', `🌡 ${v}°C`));
-initPicker('m-flowPicker', 'm-flowList', FLOW_VALS, FLOW_INIT, false,
-  v => showToast('m-toast', `🌊 ${v} L/min`));
-initDrainBtn('m-drainBtn', 'm-drainLabel', 'm-toast');
+// Init modern
+initPicker('m-tempPicker', 'm-tempList', TEMP_VALS, TEMP_INIT, true,  v => showToast('m-toast', `🌡 ${v}°C`));
+initPicker('m-flowPicker', 'm-flowList', FLOW_VALS, FLOW_INIT, false, v => showToast('m-toast', `🌊 ${v} L/min`));
+initDrainBtn('m-drainBtn', 'm-toast');
 initWaterBtn('m-waterBtn', 'm-waterLabel', 'm-statusDot', 'm-toast');
 
-// ══════════════════════════════════════════════
-//  Run after layout
-// ══════════════════════════════════════════════
 window.addEventListener('load', equalizeHeights);
 window.addEventListener('resize', equalizeHeights);
 </script>
