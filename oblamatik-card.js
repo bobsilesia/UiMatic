@@ -434,12 +434,18 @@ class OblamatikCard extends HTMLElement {
     return `
       <div class="drain-round-wrapper">
         <button class="drain-round-btn" id="drainRoundBtn" type="button" aria-label="Toggle drain">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
-            <circle cx="12" cy="12" r="9"/>
-            <line x1="5"   y1="9"    x2="19"   y2="9"/>
-            <line x1="3.3" y1="11.5" x2="20.7" y2="11.5"/>
-            <line x1="3.3" y1="14"   x2="20.7" y2="14"/>
-            <line x1="5"   y1="16.5" x2="19"   y2="16.5"/>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+            <ellipse cx="12" cy="12" rx="10" ry="4.5"/>
+            <ellipse cx="12" cy="12" rx="5"  ry="2.2"/>
+            <circle  cx="12" cy="12" r="0.8" fill="currentColor"/>
+            <line x1="17"    y1="12"    x2="22"    y2="12"/>
+            <line x1="15.54" y1="13.56" x2="19.07" y2="15.18"/>
+            <line x1="12"    y1="14.2"  x2="12"    y2="16.5"/>
+            <line x1="8.46"  y1="13.56" x2="4.93"  y2="15.18"/>
+            <line x1="7"     y1="12"    x2="2"     y2="12"/>
+            <line x1="8.46"  y1="10.44" x2="4.93"  y2="8.82"/>
+            <line x1="12"    y1="9.8"   x2="12"    y2="7.5"/>
+            <line x1="15.54" y1="10.44" x2="19.07" y2="8.82"/>
           </svg>
         </button>
         <span class="drain-round-label" id="drainRoundLabel">Drain Open</span>
@@ -557,7 +563,7 @@ class OblamatikCard extends HTMLElement {
 
   _tempColorClass(v) {
     if (v < 30) return "cold";
-    if (v < 42) return "warm";
+    if (v < 41) return "warm";
     return "hot";
   }
 
