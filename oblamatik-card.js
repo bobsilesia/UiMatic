@@ -45,7 +45,9 @@ class OblamatikCard extends HTMLElement {
       card_height:        config.card_height         != null ? config.card_height : null,
       card_color:         config.card_color          || null,
       picker_color:       config.picker_color        || null,
-      text_color:         config.text_color          || null,
+      picker_text_color:  config.picker_text_color   || null,
+      title_color:        config.title_color         || config.text_color || null,
+      labels_color:       config.labels_color        || config.text_color || null,
       accent_color:       config.accent_color        || null,
       layout:             config.layout === "modern" ? "modern" : "classic",
     };
@@ -160,21 +162,25 @@ class OblamatikCard extends HTMLElement {
   // ── Base CSS (shared) ─────────────────────────────────────────────────────
 
   _baseCSS() {
-    const { card_height, card_color, picker_color, text_color, accent_color } = this._config;
+    const { card_height, card_color, picker_color, picker_text_color, title_color, labels_color, accent_color } = this._config;
     const heightRule = card_height != null
       ? `height: ${typeof card_height === "number" ? card_height + "px" : card_height}; box-sizing: border-box;`
       : "";
-    const BG     = card_color   || "#1a1f2e";
-    const PICKER = picker_color || "#141820";
-    const TEXT   = text_color   || "#6b7a8d";
-    const ACCENT = accent_color || "#40c4ff";
+    const BG          = card_color        || "#1a1f2e";
+    const PICKER      = picker_color      || "#141820";
+    const PICKER_TEXT = picker_text_color || "#e8f0fe";
+    const TITLE       = title_color       || "#6b7a8d";
+    const LABELS      = labels_color      || "#6b7a8d";
+    const ACCENT      = accent_color      || "#40c4ff";
     return `
       :host {
         display: block;
         font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
         --card-bg: ${BG};
         --picker-bg: ${PICKER};
-        --card-text: ${TEXT};
+        --picker-text: ${PICKER_TEXT};
+        --title-color: ${TITLE};
+        --labels-color: ${LABELS};
         --accent: ${ACCENT};
       }
 
@@ -198,7 +204,7 @@ class OblamatikCard extends HTMLElement {
         display: flex; align-items: center;
         justify-content: space-between; margin-bottom: 28px;
       }
-      .header-title { font-size: 18px; font-weight: 600; color: var(--card-text); letter-spacing: 0.3px; }
+      .header-title { font-size: 18px; font-weight: 600; color: var(--title-color); letter-spacing: 0.3px; }
       .status-dot {
         width: 8px; height: 8px; border-radius: 50%; background: #3a4050;
         transition: background 0.4s ease, box-shadow 0.4s ease;
@@ -276,7 +282,7 @@ class OblamatikCard extends HTMLElement {
   _classicCSS() {
     return `
       .dial-wrapper { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; min-width: 0; }
-      .dial-label { font-size: clamp(9px, 2.5cqw, 11px); font-weight: 500; text-transform: uppercase; letter-spacing: 1.2px; color: #6b7a8d; white-space: nowrap; }
+      .dial-label { font-size: clamp(9px, 2.5cqw, 11px); font-weight: 500; text-transform: uppercase; letter-spacing: 1.2px; color: var(--labels-color, #6b7a8d); white-space: nowrap; }
       .dial-well {
         border-radius: 50%;
         padding: clamp(6px, 2cqw, 10px);
@@ -298,7 +304,7 @@ class OblamatikCard extends HTMLElement {
         transform: translate(-50%, -50%); text-align: center; pointer-events: none;
       }
       .dial-value { font-size: clamp(16px, 5cqw, 26px); font-weight: 700; color: #e8f0fe; line-height: 1; }
-      .dial-unit  { font-size: clamp(8px, 2cqw, 11px); color: #6b7a8d; margin-top: 2px; }
+      .dial-unit  { font-size: clamp(8px, 2cqw, 11px); color: var(--labels-color, #6b7a8d); margin-top: 2px; }
     `;
   }
 
@@ -366,7 +372,7 @@ class OblamatikCard extends HTMLElement {
   _modernCSS() {
     return `
       .picker-wrapper { display: flex; flex-direction: column; align-items: center; gap: 10px; flex: 1; }
-      .picker-label { font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 1.4px; color: #6b7a8d; }
+      .picker-label { font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 1.4px; color: var(--labels-color, #6b7a8d); }
       .picker {
         position: relative; width: 100%; height: 160px;
         overflow: hidden; cursor: ns-resize; touch-action: none;
@@ -395,12 +401,12 @@ class OblamatikCard extends HTMLElement {
         transition: color 0.12s, font-size 0.12s; pointer-events: none; flex-shrink: 0;
       }
       .picker-item.near   { color: #4a5a72; font-size: 19px; }
-      .picker-item.active { color: #e8f0fe; font-size: 30px; }
+      .picker-item.active { color: var(--picker-text, #e8f0fe); font-size: 30px; }
       /* temp color tinting */
       .picker-temp .picker-item.active.cold { color: #60a5fa; }
       .picker-temp .picker-item.active.warm { color: #f59e0b; }
       .picker-temp .picker-item.active.hot  { color: #ef4444; }
-      .picker-unit { font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 1.2px; color: #6b7a8d; }
+      .picker-unit { font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 1.2px; color: var(--labels-color, #6b7a8d); }
 
       /* ── Modern-only: concave (inset) button overrides ── */
       .drain-round-btn {
@@ -801,10 +807,12 @@ class OblamatikCard extends HTMLElement {
       min_flow: 0,  max_flow: 10,
       layout: "classic",           // "classic" (arc dials) | "modern" (drum pickers)
       // card_height: 400,          // optional – fixed card height
-      // card_color:  "#1a1f2e",    // optional – card background color
-      // picker_color:"#141820",    // optional – drum picker background color (modern layout)
-      // text_color:  "#6b7a8d",    // optional – label/title text color
-      // accent_color:"#40c4ff",    // optional – accent (active states, glow)
+      // card_color:        "#1a1f2e", // optional – card background color
+      // picker_color:      "#141820", // optional – drum picker background (modern layout)
+      // picker_text_color: "#e8f0fe", // optional – active value color in pickers (set dark for light picker_color)
+      // title_color:       "#6b7a8d", // optional – header title color
+      // labels_color:      "#6b7a8d", // optional – all labels/units color
+      // accent_color:      "#40c4ff", // optional – accent (active states, glow)
     };
   }
 }

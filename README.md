@@ -129,10 +129,13 @@ max_flow: 10
 | `min_flow` | number | `0` | Minimum flow (L/min) |
 | `max_flow` | number | `10` | Maximum flow (L/min) |
 | `card_height`  | number \| string | —          | Card height in px (e.g. `400`) or any CSS value (e.g. `"50vh"`, `"500px"`). If omitted, the card uses its natural height. |
-| `card_color`   | string           | `#1a1f2e`  | Card background color (hex or CSS color). Buttons inherit this color for neumorphic depth. |
-| `picker_color` | string           | `#141820`  | Background color of the drum pickers (`modern` layout only). Defaults to slightly darker than the card for visual depth. |
-| `text_color`   | string           | `#6b7a8d`  | Color of labels and header title. |
-| `accent_color` | string           | `#40c4ff`  | Accent color used for active states (water ON, drain closed, status dot, glow). |
+| `card_color`        | string | `#1a1f2e` | Card background color (hex or CSS color). Buttons inherit this color for neumorphic depth. |
+| `picker_color`      | string | `#141820` | Background color of the drum pickers (`modern` layout). Defaults to slightly darker than the card for visual depth. |
+| `picker_text_color` | string | `#e8f0fe` | Color of the active (selected) value in drum pickers. Set to a **dark** color (e.g. `"#1a1f2e"`) when using a light `picker_color` to ensure readability. |
+| `title_color`       | string | `#6b7a8d` | Color of the card header title only. |
+| `labels_color`      | string | `#6b7a8d` | Color of all control labels and units (Temperature, Flow, °C, L/min). |
+| `text_color`        | string | —         | Shorthand alias: sets both `title_color` and `labels_color` at once. Overridden by explicit `title_color` / `labels_color`. |
+| `accent_color`      | string | `#40c4ff` | Accent color used for active states (water ON, drain closed, status dot, glow). |
 | `layout` | string | `classic` | UI layout: `"classic"` – arc dial knobs; `"modern"` – iOS-style drum pickers (scroll wheel). |
 
 ---
@@ -189,12 +192,16 @@ The card supports full color theming through configuration options. All colors a
 
 ### Color variables
 
-| Variable | Affects |
-|----------|---------|
-| `card_color` | Card background, all neumorphic button backgrounds |
-| `picker_color` | Drum picker background + fade gradients (`modern` only) |
-| `text_color` | Header title, all labels (Temperature, Flow, °C, L/min) |
-| `accent_color` | Status dot, water ON color, drain CLOSED glow, button active color |
+| Variable | CSS var | Affects |
+|----------|---------|---------|
+| `card_color` | `--card-bg` | Card background + all neumorphic button backgrounds |
+| `picker_color` | `--picker-bg` | Drum picker background + fade gradients (`modern` only) |
+| `picker_text_color` | `--picker-text` | Active (selected) value in drum pickers |
+| `title_color` | `--title-color` | Header title text |
+| `labels_color` | `--labels-color` | All labels (Temperature, Flow) and units (°C, L/min) |
+| `accent_color` | `--accent` | Status dot, water ON, drain CLOSED glow |
+
+> **`text_color` alias:** Sets both `title_color` and `labels_color` at once (backward-compatible shorthand).
 
 ### Example: Default dark blue (built-in)
 
@@ -204,9 +211,27 @@ name: Bath Controller
 layout: modern
 card_color: "#1a1f2e"
 picker_color: "#141820"
-text_color: "#6b7a8d"
+picker_text_color: "#e8f0fe"
+title_color: "#6b7a8d"
+labels_color: "#6b7a8d"
 accent_color: "#40c4ff"
 ```
+
+### Example: Light picker on dark card
+
+```yaml
+type: custom:oblamatik-card
+name: Bath Controller
+layout: modern
+card_color: "#1a1f2e"
+picker_color: "#e8ecf0"
+picker_text_color: "#1a1f2e"
+title_color: "#6b7a8d"
+labels_color: "#6b7a8d"
+accent_color: "#40c4ff"
+```
+
+> **Note:** When `picker_color` is light (e.g. `"#ffffff"`), the active value would be white-on-white without `picker_text_color`. Always pair a light `picker_color` with a dark `picker_text_color`.
 
 ### Example: Deep navy theme
 
