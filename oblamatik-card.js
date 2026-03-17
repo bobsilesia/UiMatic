@@ -375,6 +375,28 @@ class OblamatikCard extends HTMLElement {
       .picker-temp .picker-item.active.warm { color: #f59e0b; }
       .picker-temp .picker-item.active.hot  { color: #ef4444; }
       .picker-unit { font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 1.2px; color: #6b7a8d; }
+
+      /* ── Modern-only: concave (inset) button overrides ── */
+      .drain-round-btn {
+        box-shadow: inset -3px -3px 7px rgba(255,255,255,0.05), inset 4px 4px 10px rgba(0,0,0,0.65);
+      }
+      .drain-round-btn:active {
+        box-shadow: inset -4px -4px 9px rgba(255,255,255,0.06), inset 5px 5px 13px rgba(0,0,0,0.75);
+      }
+      .drain-round-btn.closed {
+        color: #40c4ff;
+        box-shadow: inset -3px -3px 7px rgba(255,255,255,0.05), inset 4px 4px 10px rgba(0,0,0,0.65), 0 0 12px rgba(64,196,255,0.22);
+      }
+      .water-wide-btn {
+        box-shadow: inset -3px -3px 7px rgba(255,255,255,0.05), inset 4px 4px 10px rgba(0,0,0,0.65);
+      }
+      .water-wide-btn:active {
+        box-shadow: inset -4px -4px 9px rgba(255,255,255,0.06), inset 5px 5px 13px rgba(0,0,0,0.75);
+      }
+      .water-wide-btn.on {
+        box-shadow: inset -3px -3px 7px rgba(255,255,255,0.05), inset 4px 4px 10px rgba(0,0,0,0.65), 0 0 14px rgba(64,196,255,0.22);
+        color: #40c4ff;
+      }
     `;
   }
 
