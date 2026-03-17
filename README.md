@@ -28,9 +28,14 @@ A modern, minimalist **Lovelace custom card** for Home Assistant to control **Ob
 
 ## How it works?
 
-Try the **interactive simulator** in your browser – no Home Assistant required:
+<p align="center">
+  <a href="https://bobsilesia.github.io/UiMatic/demo-picker.html">
+    <img src="https://img.shields.io/badge/▶%20Live%20Demo-Open%20interactive%20simulator-40c4ff?style=for-the-badge&logo=html5&logoColor=white" alt="Live Demo"/>
+  </a>
+</p>
 
-👉 **[Open simulator (demo-picker.html)](https://raw.githack.com/bobsilesia/UiMatic/main/demo-picker.html)**
+**Interactive simulator** – runs directly in the browser, no Home Assistant required:  
+🔗 **[https://bobsilesia.github.io/UiMatic/demo-picker.html](https://bobsilesia.github.io/UiMatic/demo-picker.html)**
 
 The simulator shows both layouts side-by-side with fully working controls:
 
@@ -40,6 +45,10 @@ The simulator shows both layouts side-by-side with fully working controls:
 | ▬ Wide button (bottom) | **Water** ON / OFF with ripple animation |
 | Arc dials *(classic)* | Drag to set temperature & flow |
 | Drum pickers *(modern)* | Swipe up/down to scroll values |
+
+**Drain color logic:**
+- ⚫ Dark (no accent) = drain is **open** — safe, no alert needed
+- 🔵 Blue = drain is **closed** — alert! water may flood if turned on
 
 > **Safety note:** The drain is **open by default**. This prevents bathroom flooding if water is accidentally turned on before closing the drain.
 

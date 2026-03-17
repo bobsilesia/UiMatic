@@ -203,11 +203,14 @@ class OblamatikCard extends HTMLElement {
         background: linear-gradient(145deg, #1e2535, #161b27);
         box-shadow: 5px 5px 14px rgba(0,0,0,0.5), inset 0 0 0 2px #252d3d;
         cursor: pointer; display: flex; align-items: center; justify-content: center;
-        transition: transform 0.15s ease, color 0.25s ease;
-        color: #f59e0b;   /* open = orange */
+        transition: transform 0.15s ease, color 0.25s ease, box-shadow 0.25s ease;
+        color: #3a4a5e;   /* open (default) = dark, no accent */
       }
       .drain-round-btn:active { transform: scale(0.92); }
-      .drain-round-btn.closed { color: #3a4a5e; }   /* closed = dark neutral */
+      .drain-round-btn.closed {
+        color: #40c4ff;   /* closed = blue alert, same as water running */
+        box-shadow: 5px 5px 14px rgba(0,0,0,0.5), inset 0 0 0 2px #1a6fa0, 0 0 12px rgba(64,196,255,0.2);
+      }
       .drain-round-btn svg { width: clamp(18px, 5.3cqw, 24px); height: clamp(18px, 5.3cqw, 24px); }
       .drain-round-label { font-size: 9px; font-weight: 500; text-transform: uppercase; letter-spacing: 1.2px; color: #6b7a8d; }
 
