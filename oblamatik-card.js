@@ -203,14 +203,12 @@ class OblamatikCard extends HTMLElement {
         background: linear-gradient(145deg, #1e2535, #161b27);
         box-shadow: 5px 5px 14px rgba(0,0,0,0.5), inset 0 0 0 2px #252d3d;
         cursor: pointer; display: flex; align-items: center; justify-content: center;
-        transition: transform 0.15s ease;
+        transition: transform 0.15s ease, color 0.25s ease;
+        color: #f59e0b;   /* open = orange */
       }
       .drain-round-btn:active { transform: scale(0.92); }
+      .drain-round-btn.closed { color: #3a4a5e; }   /* closed = dark neutral */
       .drain-round-btn svg { width: clamp(18px, 5.3cqw, 24px); height: clamp(18px, 5.3cqw, 24px); }
-      .drain-icon-open  { color: #34d399; display: block; }
-      .drain-round-btn.closed .drain-icon-open { display: none; }
-      .drain-icon-closed { color: #ef4444; display: none; }
-      .drain-round-btn.closed .drain-icon-closed { display: block; }
       .drain-round-label { font-size: 9px; font-weight: 500; text-transform: uppercase; letter-spacing: 1.2px; color: #6b7a8d; }
 
       /* ── Water wide button / Bottom row (shared) ── */
@@ -256,12 +254,12 @@ class OblamatikCard extends HTMLElement {
 
   _classicCSS() {
     return `
-      .dial-wrapper { display: flex; flex-direction: column; align-items: center; gap: 8px; flex: 1; }
-      .dial-label { font-size: clamp(9px, 2.5cqw, 11px); font-weight: 500; text-transform: uppercase; letter-spacing: 1.2px; color: #6b7a8d; }
+      .dial-wrapper { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; min-width: 0; }
+      .dial-label { font-size: clamp(9px, 2.5cqw, 11px); font-weight: 500; text-transform: uppercase; letter-spacing: 1.2px; color: #6b7a8d; white-space: nowrap; }
       .dial-container {
         position: relative;
-        width: clamp(90px, 28cqw, 150px); height: clamp(90px, 28cqw, 150px);
-        cursor: grab; touch-action: none;
+        width: clamp(80px, 24cqw, 130px); height: clamp(80px, 24cqw, 130px);
+        cursor: grab; touch-action: none; flex-shrink: 0;
       }
       .dial-container:active { cursor: grabbing; }
       .dial-svg { width: 100%; height: 100%; display: block; }
@@ -407,14 +405,12 @@ class OblamatikCard extends HTMLElement {
     return `
       <div class="drain-round-wrapper">
         <button class="drain-round-btn" id="drainRoundBtn" type="button" aria-label="Toggle drain">
-          <svg class="drain-icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="3"/>
-            <path d="M12 5v2M12 17v2M5 12H7M17 12h2M7.05 7.05l1.41 1.41M15.54 15.54l1.41 1.41M7.05 16.95l1.41-1.41M15.54 8.46l1.41-1.41"/>
-          </svg>
-          <svg class="drain-icon-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="3"/>
-            <path d="M12 5v2M12 17v2M5 12H7M17 12h2M7.05 7.05l1.41 1.41M15.54 15.54l1.41 1.41M7.05 16.95l1.41-1.41M15.54 8.46l1.41-1.41"/>
-            <line x1="4" y1="4" x2="20" y2="20" stroke="#ef4444" stroke-width="1.5"/>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <circle cx="12" cy="12" r="9"/>
+            <line x1="5"   y1="9"    x2="19"   y2="9"/>
+            <line x1="3.3" y1="11.5" x2="20.7" y2="11.5"/>
+            <line x1="3.3" y1="14"   x2="20.7" y2="14"/>
+            <line x1="5"   y1="16.5" x2="19"   y2="16.5"/>
           </svg>
         </button>
         <span class="drain-round-label" id="drainRoundLabel">Drain Open</span>
