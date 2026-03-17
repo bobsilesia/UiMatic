@@ -28,14 +28,15 @@ A modern, minimalist **Lovelace custom card** for Home Assistant to control **Ob
 
 ## How it works?
 
+**Interactive simulator** – runs directly in the browser, no Home Assistant required:
+
+
 <p align="center">
   <a href="https://bobsilesia.github.io/UiMatic/demo-picker.html">
     <img src="https://img.shields.io/badge/▶%20Live%20Demo-Open%20interactive%20simulator-40c4ff?style=for-the-badge&logo=html5&logoColor=white" alt="Live Demo"/>
   </a>
 </p>
 
-**Interactive simulator** – runs directly in the browser, no Home Assistant required:  
-🔗 **[https://bobsilesia.github.io/UiMatic/demo-picker.html](https://bobsilesia.github.io/UiMatic/demo-picker.html)**
 
 The simulator shows both layouts side-by-side with fully working controls:
 
