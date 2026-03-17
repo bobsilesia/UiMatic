@@ -435,7 +435,7 @@ function buildValues(min, max, step) {
 const TEMP_VALS = buildValues(TEMP_MIN, TEMP_MAX, TEMP_STEP);
 const FLOW_VALS = buildValues(FLOW_MIN, FLOW_MAX, FLOW_STEP);
 
-function tempColorClass(v) { return v < 30 ? 'cold' : v < 41 ? 'warm' : 'hot'; }
+function tempColorClass(v) { return v < 30 ? 'cold' : v < 40 ? 'warm' : 'hot'; }
 
 const toastTimers = {};
 function showToast(id, msg) {

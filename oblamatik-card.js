@@ -168,10 +168,17 @@ class OblamatikCard extends HTMLElement {
       : "";
     const BG          = card_color        || "#1a1f2e";
     const PICKER      = picker_color      || "#141820";
-    const PICKER_TEXT = picker_text_color || "#e8f0fe";
+    // Auto-detect picker text: if picker is light and user didn't override → use dark text
+    const PICKER_TEXT = picker_text_color
+      ? picker_text_color
+      : (picker_color && this._isLightColor(picker_color) ? "#2a2a2a" : "#e8f0fe");
     const TITLE       = title_color       || "#6b7a8d";
     const LABELS      = labels_color      || "#6b7a8d";
     const ACCENT      = accent_color      || "#40c4ff";
+    // Solid bg when custom color set; default gradient otherwise
+    const bgStyle = card_color
+      ? `background: ${BG} !important;`
+      : `background: linear-gradient(145deg, #1a1f2e 0%, #0f1318 100%) !important;`;
     return `
       :host {
         display: block;
@@ -185,7 +192,7 @@ class OblamatikCard extends HTMLElement {
       }
 
       ha-card, .card {
-        background: linear-gradient(145deg, ${BG} 0%, #0f1318 100%) !important;
+        ${bgStyle}
         border-radius: 24px !important;
         padding: 24px;
         color: #fff;
@@ -594,8 +601,34 @@ class OblamatikCard extends HTMLElement {
 
   _tempColorClass(v) {
     if (v < 30) return "cold";
-    if (v < 41) return "warm";
+    if (v < 40) return "warm";
     return "hot";
+  }
+
+  // Returns true if the given CSS color string is perceptually light (luminance > 128/255)
+  _isLightColor(color) {
+    if (!color) return false;
+    const s = color.trim().toLowerCase();
+    const lightNames = ["white","snow","ivory","lightyellow","mintcream","honeydew",
+      "aliceblue","lavender","ghostwhite","floralwhite","seashell","linen","oldlace",
+      "antiquewhite","papayawhip","blanchedalmond","bisque","peachpuff","moccasin",
+      "mistyrose","lavenderblush","beige","whitesmoke","cornsilk"];
+    if (lightNames.includes(s)) return true;
+    // #fff or all-f hex
+    if (/^#f{3,8}$/i.test(s)) return true;
+    // #RGB or #RRGGBB
+    const hex = s.match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i);
+    if (hex) {
+      let h = hex[1].length === 3 ? hex[1].split("").map(c => c+c).join("") : hex[1];
+      const r = parseInt(h.slice(0,2),16), g = parseInt(h.slice(2,4),16), b = parseInt(h.slice(4,6),16);
+      return (0.299*r + 0.587*g + 0.114*b) > 128;
+    }
+    // rgb(r,g,b)
+    const rgb = s.match(/^rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)$/);
+    if (rgb) {
+      return (0.299*parseInt(rgb[1]) + 0.587*parseInt(rgb[2]) + 0.114*parseInt(rgb[3])) > 128;
+    }
+    return false;
   }
 
   _initPickers() {
