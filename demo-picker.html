@@ -143,50 +143,53 @@
     .picker-temp .picker-item.active.hot  { color: #ef4444; }
     .picker-unit { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.2px; color: #6b7a8d; }
 
-    /* ══ Drain round button (center) ══ */
+    /* ══ Drain round button – neumorphic ══ */
     .drain-round-wrapper {
       display: flex; flex-direction: column; align-items: center; gap: 8px; flex-shrink: 0;
     }
     .drain-round-btn {
       width: 57px; height: 57px; border-radius: 50%; border: none;
-      background: linear-gradient(145deg, #1e2535, #161b27);
-      box-shadow: 5px 5px 14px rgba(0,0,0,0.5), inset 0 0 0 2px #252d3d;
+      background: #1a1f2e;
+      box-shadow: -4px -4px 9px rgba(255,255,255,0.05), 5px 5px 13px rgba(0,0,0,0.65);
       cursor: pointer; display: flex; align-items: center; justify-content: center;
-      transition: transform 0.15s ease, color 0.25s ease;
-      color: #3a4a5e;   /* open (default) = dark, no accent */
+      transition: box-shadow 0.25s ease, color 0.25s ease;
+      color: #3a4a5e;
+    }
+    .drain-round-btn:active {
+      box-shadow: inset -2px -2px 5px rgba(255,255,255,0.04), inset 3px 3px 8px rgba(0,0,0,0.65);
     }
     .drain-round-btn.closed {
-      color: #40c4ff;  /* closed = blue alert, same as water running */
-      box-shadow: 5px 5px 14px rgba(0,0,0,0.5), inset 0 0 0 2px #1a6fa0, 0 0 12px rgba(64,196,255,0.2);
+      color: #40c4ff;
+      box-shadow: inset -2px -2px 5px rgba(255,255,255,0.04), inset 3px 3px 8px rgba(0,0,0,0.65), 0 0 10px rgba(64,196,255,0.18);
     }
-    .drain-round-btn:active { transform: scale(0.92); }
     .drain-round-btn svg { width: 22px; height: 22px; }
     .drain-round-label { font-size: 9px; font-weight: 500; text-transform: uppercase; letter-spacing: 1.2px; color: #6b7a8d; }
 
-    /* ══ Water wide button (bottom) ══ */
+    /* ══ Water wide button – neumorphic pill ══ */
     .bottom-row { display: flex; gap: 10px; margin-top: 18px; flex-shrink: 0; }
     .water-wide-btn {
-      flex: 1; height: 50px; border-radius: 14px; border: none;
-      background: linear-gradient(145deg, #1e2535, #161b27);
-      box-shadow: 4px 4px 10px rgba(0,0,0,0.4), inset 0 0 0 1.5px #252d3d;
+      flex: 1; height: 50px; border-radius: 25px; border: none;
+      background: #1a1f2e;
+      box-shadow: -4px -4px 9px rgba(255,255,255,0.05), 5px 5px 13px rgba(0,0,0,0.65);
       cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
       color: #4a5568; font-size: 12px; font-weight: 500; letter-spacing: 0.3px;
-      transition: all 0.3s; font-family: inherit; position: relative; overflow: hidden;
+      transition: box-shadow 0.3s ease, color 0.3s ease; font-family: inherit;
+      position: relative; overflow: hidden;
     }
-    .water-wide-btn:active { transform: scale(0.97); }
+    .water-wide-btn:active {
+      box-shadow: inset -2px -2px 5px rgba(255,255,255,0.04), inset 3px 3px 8px rgba(0,0,0,0.65);
+    }
     .water-wide-btn.running {
-      background: linear-gradient(145deg, #0d4f7a, #0a3d5e);
-      box-shadow: 4px 4px 10px rgba(0,0,0,0.4), inset 0 0 0 1.5px #1a6fa0, 0 0 16px rgba(64,196,255,0.25);
+      box-shadow: inset -2px -2px 5px rgba(255,255,255,0.04), inset 3px 3px 8px rgba(0,0,0,0.65), 0 0 14px rgba(64,196,255,0.2);
       color: #40c4ff;
     }
     .water-wide-btn svg { width: 17px; height: 17px; flex-shrink: 0; }
-    /* ripple on wide button */
     .water-wide-btn .ripple-ring {
-      position: absolute; border-radius: 50%; border: 2px solid rgba(64,196,255,0.3); pointer-events: none;
+      position: absolute; border-radius: 50%; border: 2px solid rgba(64,196,255,0.25); pointer-events: none;
     }
     @keyframes rippleWide {
       0%   { width: 40px; height: 40px; top: 50%; left: 50%; transform: translate(-50%,-50%); opacity: 0.6; }
-      100% { width: 200px; height: 200px; top: 50%; left: 50%; transform: translate(-50%,-50%); opacity: 0; }
+      100% { width: 220px; height: 220px; top: 50%; left: 50%; transform: translate(-50%,-50%); opacity: 0; }
     }
     .water-wide-btn.running .ripple-ring { animation: rippleWide 2s ease-out infinite; }
 
