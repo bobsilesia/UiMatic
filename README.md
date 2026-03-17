@@ -130,6 +130,7 @@ max_flow: 10
 | `max_flow` | number | `10` | Maximum flow (L/min) |
 | `card_height`  | number \| string | —          | Card height in px (e.g. `400`) or any CSS value (e.g. `"50vh"`, `"500px"`). If omitted, the card uses its natural height. |
 | `card_color`   | string           | `#1a1f2e`  | Card background color (hex or CSS color). Buttons inherit this color for neumorphic depth. |
+| `picker_color` | string           | `#141820`  | Background color of the drum pickers (`modern` layout only). Defaults to slightly darker than the card for visual depth. |
 | `text_color`   | string           | `#6b7a8d`  | Color of labels and header title. |
 | `accent_color` | string           | `#40c4ff`  | Accent color used for active states (water ON, drain closed, status dot, glow). |
 | `layout` | string | `classic` | UI layout: `"classic"` – arc dial knobs; `"modern"` – iOS-style drum pickers (scroll wheel). |
@@ -177,6 +178,83 @@ layout: "modern"
 ```
 
 > **Tip:** All other options (`card_height`, entity IDs, min/max ranges) work identically in both layouts.
+
+---
+
+## Customization & Theming
+
+The card supports full color theming through configuration options. All colors accept any valid CSS color value (hex, `rgb()`, `hsl()`, named colors).
+
+> **Neumorphic rule:** For the best neumorphic (soft UI) depth effect, `card_color` and `picker_color` should be **dark desaturated** colors. Light colors invert the shadow model and may look flat.
+
+### Color variables
+
+| Variable | Affects |
+|----------|---------|
+| `card_color` | Card background, all neumorphic button backgrounds |
+| `picker_color` | Drum picker background + fade gradients (`modern` only) |
+| `text_color` | Header title, all labels (Temperature, Flow, °C, L/min) |
+| `accent_color` | Status dot, water ON color, drain CLOSED glow, button active color |
+
+### Example: Default dark blue (built-in)
+
+```yaml
+type: custom:oblamatik-card
+name: Bath Controller
+layout: modern
+card_color: "#1a1f2e"
+picker_color: "#141820"
+text_color: "#6b7a8d"
+accent_color: "#40c4ff"
+```
+
+### Example: Deep navy theme
+
+```yaml
+type: custom:oblamatik-card
+name: Bath Controller
+layout: modern
+card_color: "#0d1b2a"
+picker_color: "#091523"
+text_color: "#5f7a8a"
+accent_color: "#00bcd4"
+```
+
+### Example: Dark slate theme
+
+```yaml
+type: custom:oblamatik-card
+name: Bath Controller
+layout: classic
+card_color: "#1e2029"
+text_color: "#7a8599"
+accent_color: "#7c3aed"
+```
+
+### Example: Dark warm graphite
+
+```yaml
+type: custom:oblamatik-card
+name: Bath Controller
+layout: modern
+card_color: "#1f1c1a"
+picker_color: "#161412"
+text_color: "#8a7a6d"
+accent_color: "#ff8a65"
+```
+
+> **Tip:** The `picker_color` is most visible when set lighter than `card_color` (reversed depth) or darker (deeper well). Default is darker for a "pressed into the card" feel.
+
+### Fixed card height for grid layouts
+
+When placing multiple cards side-by-side in a grid, use `card_height` to keep them uniform:
+
+```yaml
+type: custom:oblamatik-card
+name: Bath Controller
+card_height: 380
+layout: modern
+```
 
 ---
 

@@ -44,6 +44,7 @@ class OblamatikCard extends HTMLElement {
       max_flow:           config.max_flow            != null ? config.max_flow : 10,
       card_height:        config.card_height         != null ? config.card_height : null,
       card_color:         config.card_color          || null,
+      picker_color:       config.picker_color        || null,
       text_color:         config.text_color          || null,
       accent_color:       config.accent_color        || null,
       layout:             config.layout === "modern" ? "modern" : "classic",
@@ -159,11 +160,12 @@ class OblamatikCard extends HTMLElement {
   // ── Base CSS (shared) ─────────────────────────────────────────────────────
 
   _baseCSS() {
-    const { card_height, card_color, text_color, accent_color } = this._config;
+    const { card_height, card_color, picker_color, text_color, accent_color } = this._config;
     const heightRule = card_height != null
       ? `height: ${typeof card_height === "number" ? card_height + "px" : card_height}; box-sizing: border-box;`
       : "";
     const BG     = card_color   || "#1a1f2e";
+    const PICKER = picker_color || "#141820";
     const TEXT   = text_color   || "#6b7a8d";
     const ACCENT = accent_color || "#40c4ff";
     return `
@@ -171,6 +173,7 @@ class OblamatikCard extends HTMLElement {
         display: block;
         font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
         --card-bg: ${BG};
+        --picker-bg: ${PICKER};
         --card-text: ${TEXT};
         --accent: ${ACCENT};
       }
@@ -367,14 +370,14 @@ class OblamatikCard extends HTMLElement {
       .picker {
         position: relative; width: 100%; height: 160px;
         overflow: hidden; cursor: ns-resize; touch-action: none;
-        border-radius: 16px; background: #141820;
+        border-radius: 16px; background: var(--picker-bg, #141820);
         box-shadow: inset -3px -3px 7px rgba(255,255,255,0.04), inset 4px 4px 12px rgba(0,0,0,0.7);
       }
       .picker::before, .picker::after {
         content: ''; position: absolute; left: 0; right: 0; height: 50px; z-index: 2; pointer-events: none;
       }
-      .picker::before { top: 0; background: linear-gradient(to bottom, #141820 0%, transparent 100%); }
-      .picker::after  { bottom: 0; background: linear-gradient(to top, #141820 0%, transparent 100%); }
+      .picker::before { top: 0; background: linear-gradient(to bottom, var(--picker-bg, #141820) 0%, transparent 100%); }
+      .picker::after  { bottom: 0; background: linear-gradient(to top, var(--picker-bg, #141820) 0%, transparent 100%); }
       .picker-line {
         position: absolute; left: 16px; right: 16px; height: 1px;
         background: #2a3550; z-index: 3; pointer-events: none;
@@ -799,6 +802,7 @@ class OblamatikCard extends HTMLElement {
       layout: "classic",           // "classic" (arc dials) | "modern" (drum pickers)
       // card_height: 400,          // optional – fixed card height
       // card_color:  "#1a1f2e",    // optional – card background color
+      // picker_color:"#141820",    // optional – drum picker background color (modern layout)
       // text_color:  "#6b7a8d",    // optional – label/title text color
       // accent_color:"#40c4ff",    // optional – accent (active states, glow)
     };
