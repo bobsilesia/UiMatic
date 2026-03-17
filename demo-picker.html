@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>UiMatic – Interactive Simulator</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #07090f;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      color: #fff;
+      padding: 32px 16px 48px;
+      gap: 24px;
+    }
+
+    h1 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #3a4558;
+      text-transform: uppercase;
+      letter-spacing: 2.5px;
+    }
+
+    .layout-row {
+      display: flex;
+      gap: 28px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .col-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.8px;
+      color: #3a4558;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: linear-gradient(145deg, #1a1f2e 0%, #0f1318 100%);
+      border-radius: 24px;
+      padding: 24px;
+      width: 320px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.7);
+      user-select: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    /* ── Header ── */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+    .header-title { font-size: 17px; font-weight: 600; color: #6b7a8d; letter-spacing: 0.3px; }
+    .status-dot {
+      width: 8px; height: 8px; border-radius: 50%; background: #3a4050;
+      transition: background 0.4s ease, box-shadow 0.4s ease;
+    }
+    .status-dot.running {
+      background: #40c4ff;
+      box-shadow: 0 0 10px rgba(64,196,255,0.6);
+    }
+
+    /* ── Controls row ── */
+    .controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    /* ══ CLASSIC dials ══ */
+    .dial-wrapper { display: flex; flex-direction: column; align-items: center; gap: 8px; flex: 1; min-width: 0; }
+    .dial-label { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.3px; color: #6b7a8d; white-space: nowrap; }
+    .dial-container {
+      position: relative;
+      width: 90px; height: 90px; flex-shrink: 0;
+      cursor: grab; touch-action: none;
+    }
+    .dial-container:active { cursor: grabbing; }
+    .dial-svg { width: 100%; height: 100%; display: block; }
+    .dial-track { fill: none; stroke: #1e2535; stroke-width: 8; stroke-linecap: round; }
+    .dial-fill  { fill: none; stroke-width: 8; stroke-linecap: round; }
+    .dial-center {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%,-50%); text-align: center; pointer-events: none;
+    }
+    .dial-value { font-size: 22px; font-weight: 700; color: #e8f0fe; line-height: 1; }
+    .dial-unit  { font-size: 9px; color: #6b7a8d; margin-top: 2px; }
+
+    /* ══ MODERN pickers ══ */
+    .picker-wrapper { display: flex; flex-direction: column; align-items: center; gap: 8px; flex: 1; }
+    .picker-label { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.3px; color: #6b7a8d; }
+    .picker {
+      position: relative; width: 100%; height: 140px;
+      overflow: hidden; cursor: ns-resize; touch-action: none;
+      border-radius: 14px; background: #141820; border: 1px solid #1e2535;
+    }
+    .picker::before, .picker::after {
+      content: ''; position: absolute; left: 0; right: 0; height: 44px; z-index: 2; pointer-events: none;
+    }
+    .picker::before { top: 0; background: linear-gradient(to bottom, #141820, transparent); }
+    .picker::after  { bottom: 0; background: linear-gradient(to top, #141820, transparent); }
+    .picker-line { position: absolute; left: 14px; right: 14px; height: 1px; background: #2a3550; z-index: 3; pointer-events: none; }
+    .picker-line-top    { top: calc(50% - 20px); }
+    .picker-line-bottom { top: calc(50% + 20px); }
+    .picker-list {
+      position: absolute; top: 0; left: 0; right: 0;
+      display: flex; flex-direction: column; align-items: center;
+      will-change: transform;
+    }
+    .picker-item {
+      height: 40px; display: flex; align-items: center; justify-content: center;
+      width: 100%; font-weight: 700; color: #1e2838; font-size: 14px;
+      transition: color 0.12s, font-size 0.12s; pointer-events: none; flex-shrink: 0;
+    }
+    .picker-item.near   { color: #3a4a5e; font-size: 16px; }
+    .picker-item.active { color: #e8f0fe; font-size: 28px; }
+    .picker-temp .picker-item.active.cold { color: #60a5fa; }
+    .picker-temp .picker-item.active.warm { color: #f59e0b; }
+    .picker-temp .picker-item.active.hot  { color: #ef4444; }
+    .picker-unit { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.2px; color: #6b7a8d; }
+
+    /* ══ Drain round button (center) ══ */
+    .drain-round-wrapper {
+      display: flex; flex-direction: column; align-items: center; gap: 8px; flex-shrink: 0;
+    }
+    .drain-round-btn {
+      width: 57px; height: 57px; border-radius: 50%; border: none;
+      background: linear-gradient(145deg, #1e2535, #161b27);
+      box-shadow: 5px 5px 14px rgba(0,0,0,0.5), inset 0 0 0 2px #252d3d;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: transform 0.15s ease;
+    }
+    .drain-round-btn:active { transform: scale(0.92); }
+    .drain-round-btn svg { width: 21px; height: 21px; }
+    .drain-icon-open  { color: #34d399; display: block; }
+    .drain-round-btn.closed .drain-icon-open { display: none; }
+    .drain-icon-closed { color: #ef4444; display: none; }
+    .drain-round-btn.closed .drain-icon-closed { display: block; }
+    .drain-round-label { font-size: 9px; font-weight: 500; text-transform: uppercase; letter-spacing: 1.2px; color: #6b7a8d; }
+
+    /* ══ Water wide button (bottom) ══ */
+    .bottom-row { display: flex; gap: 10px; }
+    .water-wide-btn {
+      flex: 1; height: 50px; border-radius: 14px; border: none;
+      background: linear-gradient(145deg, #1e2535, #161b27);
+      box-shadow: 4px 4px 10px rgba(0,0,0,0.4), inset 0 0 0 1.5px #252d3d;
+      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+      color: #4a5568; font-size: 12px; font-weight: 500; letter-spacing: 0.3px;
+      transition: all 0.3s; font-family: inherit; position: relative; overflow: hidden;
+    }
+    .water-wide-btn:active { transform: scale(0.97); }
+    .water-wide-btn.running {
+      background: linear-gradient(145deg, #0d4f7a, #0a3d5e);
+      box-shadow: 4px 4px 10px rgba(0,0,0,0.4), inset 0 0 0 1.5px #1a6fa0, 0 0 16px rgba(64,196,255,0.25);
+      color: #40c4ff;
+    }
+    .water-wide-btn svg { width: 17px; height: 17px; flex-shrink: 0; }
+    /* ripple on wide button */
+    .water-wide-btn .ripple-ring {
+      position: absolute; border-radius: 50%; border: 2px solid rgba(64,196,255,0.3); pointer-events: none;
+    }
+    @keyframes rippleWide {
+      0%   { width: 40px; height: 40px; top: 50%; left: 50%; transform: translate(-50%,-50%); opacity: 0.6; }
+      100% { width: 200px; height: 200px; top: 50%; left: 50%; transform: translate(-50%,-50%); opacity: 0; }
+    }
+    .water-wide-btn.running .ripple-ring { animation: rippleWide 2s ease-out infinite; }
+
+    /* ── Toast ── */
+    .toast {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 11px;
+      color: #40c4ff;
+      opacity: 0;
+      transition: opacity 0.3s;
+      min-height: 18px;
+      letter-spacing: 0.3px;
+    }
+    .toast.show { opacity: 1; }
+
+    /* ── Footer note ── */
+    .demo-note {
+      font-size: 11px;
+      color: #2a3250;
+      letter-spacing: 0.5px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<h1>UiMatic — Interactive Simulator</h1>
+
+<div class="layout-row">
+
+  <!-- ═══════════════ CLASSIC ═══════════════ -->
+  <div class="col">
+    <span class="col-label">layout: "classic"</span>
+    <div class="card" id="classicCard">
+      <div class="header">
+        <span class="header-title">Bath Controller</span>
+        <div class="status-dot" id="c-statusDot"></div>
+      </div>
+
+      <div class="controls">
+        <!-- Temp dial -->
+        <div class="dial-wrapper">
+          <span class="dial-label">Temperature</span>
+          <div class="dial-container" id="c-tempDial">
+            <svg class="dial-svg" viewBox="0 0 110 110">
+              <defs>
+                <linearGradient id="c-tg" x1="100%" y1="0%" x2="0%" y2="0%">
+                  <stop offset="0%"   stop-color="#3b82f6"/>
+                  <stop offset="50%"  stop-color="#f59e0b"/>
+                  <stop offset="100%" stop-color="#ef4444"/>
+                </linearGradient>
+              </defs>
+              <g transform="rotate(-130 55 55)">
+                <circle class="dial-track" cx="55" cy="55" r="44" stroke-dasharray="199 77"/>
+                <circle class="dial-fill" id="c-tempArc" cx="55" cy="55" r="44" stroke="url(#c-tg)" stroke-dasharray="0 276"/>
+              </g>
+            </svg>
+            <div class="dial-center">
+              <div class="dial-value" id="c-tempVal">38</div>
+              <div class="dial-unit">°C</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Drain round button (default open) -->
+        <div class="drain-round-wrapper">
+          <button class="drain-round-btn" id="c-drainBtn" aria-label="Toggle drain">
+            <!-- open icon: drain/plug -->
+            <svg class="drain-icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M12 5v2M12 17v2M5 12H7M17 12h2M7.05 7.05l1.41 1.41M15.54 15.54l1.41 1.41M7.05 16.95l1.41-1.41M15.54 8.46l1.41-1.41"/>
+            </svg>
+            <!-- closed icon: plug with line through -->
+            <svg class="drain-icon-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M12 5v2M12 17v2M5 12H7M17 12h2M7.05 7.05l1.41 1.41M15.54 15.54l1.41 1.41M7.05 16.95l1.41-1.41M15.54 8.46l1.41-1.41"/>
+              <line x1="4" y1="4" x2="20" y2="20" stroke="#ef4444" stroke-width="1.5"/>
+            </svg>
+          </button>
+          <span class="drain-round-label" id="c-drainLabel">Drain Open</span>
+        </div>
+
+        <!-- Flow dial -->
+        <div class="dial-wrapper">
+          <span class="dial-label">Flow</span>
+          <div class="dial-container" id="c-flowDial">
+            <svg class="dial-svg" viewBox="0 0 110 110">
+              <defs>
+                <linearGradient id="c-fg" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%"   stop-color="#1e40af"/>
+                  <stop offset="100%" stop-color="#40c4ff"/>
+                </linearGradient>
+              </defs>
+              <g transform="rotate(-130 55 55)">
+                <circle class="dial-track" cx="55" cy="55" r="44" stroke-dasharray="199 77"/>
+                <circle class="dial-fill" id="c-flowArc" cx="55" cy="55" r="44" stroke="url(#c-fg)" stroke-dasharray="0 276"/>
+              </g>
+            </svg>
+            <div class="dial-center">
+              <div class="dial-value" id="c-flowVal">5.0</div>
+              <div class="dial-unit">L/min</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Water wide button (bottom) -->
+      <div class="bottom-row">
+        <button class="water-wide-btn" id="c-waterBtn">
+          <div class="ripple-ring"></div>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2C6 8 4 12 4 15a8 8 0 0016 0c0-3-2-7-8-13z"/>
+            <path d="M9 18c0 1.7 1.3 3 3 3s3-1.3 3-3"/>
+          </svg>
+          <span id="c-waterLabel">Water</span>
+        </button>
+      </div>
+
+      <div class="toast" id="c-toast"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ MODERN ═══════════════ -->
+  <div class="col">
+    <span class="col-label">layout: "modern"</span>
+    <div class="card" id="modernCard">
+      <div class="header">
+        <span class="header-title">Bath Controller</span>
+        <div class="status-dot" id="m-statusDot"></div>
+      </div>
+
+      <div class="controls">
+        <!-- Temp picker -->
+        <div class="picker-wrapper">
+          <span class="picker-label">Temperature</span>
+          <div class="picker picker-temp" id="m-tempPicker">
+            <div class="picker-line picker-line-top"></div>
+            <div class="picker-line picker-line-bottom"></div>
+            <div class="picker-list" id="m-tempList"></div>
+          </div>
+          <span class="picker-unit">°C</span>
+        </div>
+
+        <!-- Drain round button (default open) -->
+        <div class="drain-round-wrapper">
+          <button class="drain-round-btn" id="m-drainBtn" aria-label="Toggle drain">
+            <svg class="drain-icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M12 5v2M12 17v2M5 12H7M17 12h2M7.05 7.05l1.41 1.41M15.54 15.54l1.41 1.41M7.05 16.95l1.41-1.41M15.54 8.46l1.41-1.41"/>
+            </svg>
+            <svg class="drain-icon-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M12 5v2M12 17v2M5 12H7M17 12h2M7.05 7.05l1.41 1.41M15.54 15.54l1.41 1.41M7.05 16.95l1.41-1.41M15.54 8.46l1.41-1.41"/>
+              <line x1="4" y1="4" x2="20" y2="20" stroke="#ef4444" stroke-width="1.5"/>
+            </svg>
+          </button>
+          <span class="drain-round-label" id="m-drainLabel">Drain Open</span>
+        </div>
+
+        <!-- Flow picker -->
+        <div class="picker-wrapper">
+          <span class="picker-label">Flow</span>
+          <div class="picker" id="m-flowPicker">
+            <div class="picker-line picker-line-top"></div>
+            <div class="picker-line picker-line-bottom"></div>
+            <div class="picker-list" id="m-flowList"></div>
+          </div>
+          <span class="picker-unit">L/min</span>
+        </div>
+      </div>
+
+      <!-- Water wide button (bottom) -->
+      <div class="bottom-row">
+        <button class="water-wide-btn" id="m-waterBtn">
+          <div class="ripple-ring"></div>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2C6 8 4 12 4 15a8 8 0 0016 0c0-3-2-7-8-13z"/>
+            <path d="M9 18c0 1.7 1.3 3 3 3s3-1.3 3-3"/>
+          </svg>
+          <span id="m-waterLabel">Water</span>
+        </button>
+      </div>
+
+      <div class="toast" id="m-toast"></div>
+    </div>
+  </div>
+
+</div><!-- /layout-row -->
+
+<p class="demo-note">⬆⬇ drag pickers · drag arc dials · tap buttons to toggle</p>
+
+<script>
+// ══════════════════════════════════════════════
+//  Shared config
+// ══════════════════════════════════════════════
+const TEMP_MIN = 10, TEMP_MAX = 45, TEMP_STEP = 1,  TEMP_INIT = 38;
+const FLOW_MIN = 0,  FLOW_MAX = 10, FLOW_STEP = 0.5, FLOW_INIT = 5;
+const ARC_DEG  = 260;  // classic dial sweep in degrees
+
+function buildValues(min, max, step) {
+  const vals = [];
+  for (let v = min; v <= max + 0.001; v = Math.round((v + step) * 1000) / 1000)
+    vals.push(Math.round(v * 100) / 100);
+  return vals;
+}
+const TEMP_VALS = buildValues(TEMP_MIN, TEMP_MAX, TEMP_STEP);
+const FLOW_VALS = buildValues(FLOW_MIN, FLOW_MAX, FLOW_STEP);
+
+function tempColorClass(v) { return v < 30 ? 'cold' : v < 42 ? 'warm' : 'hot'; }
+
+// ══════════════════════════════════════════════
+//  Toast helper
+// ══════════════════════════════════════════════
+const toastTimers = {};
+function showToast(id, msg) {
+  const t = document.getElementById(id);
+  if (!t) return;
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimers[id]);
+  toastTimers[id] = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// ══════════════════════════════════════════════
+//  Water wide button toggle
+// ══════════════════════════════════════════════
+function initWaterBtn(btnId, labelId, dotId, toastId) {
+  let on = false;
+  const btn   = document.getElementById(btnId);
+  const label = document.getElementById(labelId);
+  const dot   = document.getElementById(dotId);
+  btn.addEventListener('click', () => {
+    on = !on;
+    btn.classList.toggle('running', on);
+    dot.classList.toggle('running', on);
+    label.textContent = on ? 'Running' : 'Water';
+    showToast(toastId, on ? '💧 Water ON' : '⏹ Water OFF');
+  });
+}
+
+// ══════════════════════════════════════════════
+//  Drain round button toggle (default: OPEN)
+// ══════════════════════════════════════════════
+function initDrainBtn(btnId, labelId, toastId) {
+  let open = true; // default: drain is OPEN
+  const btn   = document.getElementById(btnId);
+  const label = document.getElementById(labelId);
+  // start open
+  btn.classList.remove('closed');
+  label.textContent = 'Drain Open';
+
+  btn.addEventListener('click', () => {
+    open = !open;
+    btn.classList.toggle('closed', !open);
+    label.textContent = open ? 'Drain Open' : 'Drain Closed';
+    showToast(toastId, open ? '🟢 Drain open' : '🔴 Drain closed');
+  });
+}
+
+// ══════════════════════════════════════════════
+//  Classic dial
+// ══════════════════════════════════════════════
+function initDial(dialId, arcId, valId, min, max, initVal, onCommit) {
+  const dial  = document.getElementById(dialId);
+  const arc   = document.getElementById(arcId);
+  const valEl = document.getElementById(valId);
+  const CIRC  = 2 * Math.PI * 44;
+  let current = initVal, dragging = false;
+
+  function setArc(ratio) {
+    const filled = Math.max(0, Math.min(1, ratio)) * CIRC;
+    const gap    = CIRC - filled + 77;
+    arc.setAttribute('stroke-dasharray', `${filled.toFixed(2)} ${gap.toFixed(2)}`);
+  }
+  function setValue(v) {
+    current = v;
+    valEl.textContent = Number.isInteger(v) ? v : v.toFixed(1);
+    setArc((v - min) / (max - min));
+  }
+
+  function angleFromEvent(e) {
+    const rect = dial.getBoundingClientRect();
+    const cx = rect.left + rect.width  / 2;
+    const cy = rect.top  + rect.height / 2;
+    let deg = Math.atan2(e.clientY - cy, e.clientX - cx) * (180 / Math.PI);
+    deg = ((deg + 40) % 360 + 360) % 360;
+    return Math.min(ARC_DEG, Math.max(0, deg));
+  }
+  function applyAngle(deg) {
+    const ratio = deg / ARC_DEG;
+    const v = min + ratio * (max - min);
+    const step = max === FLOW_MAX ? 0.5 : 1;
+    const snapped = Math.round(v / step) * step;
+    setValue(Math.max(min, Math.min(max, snapped)));
+  }
+
+  setValue(initVal);
+
+  dial.addEventListener('pointerdown', e => {
+    dragging = true; dial.setPointerCapture(e.pointerId);
+    applyAngle(angleFromEvent(e)); e.preventDefault();
+  });
+  dial.addEventListener('pointermove', e => { if (dragging) applyAngle(angleFromEvent(e)); });
+  dial.addEventListener('pointerup',   () => { if (dragging) { dragging = false; onCommit(current); } });
+  dial.addEventListener('pointercancel', () => { dragging = false; });
+}
+
+// ══════════════════════════════════════════════
+//  Modern picker
+// ══════════════════════════════════════════════
+function initPicker(pickerId, listId, vals, initVal, isTemp, onCommit) {
+  const picker = document.getElementById(pickerId);
+  const list   = document.getElementById(listId);
+  const ITEM_H = 40, PAD = 2, H = 140;
+
+  // populate
+  for (let i = 0; i < PAD; i++) {
+    const d = document.createElement('div'); d.className = 'picker-item'; list.appendChild(d);
+  }
+  vals.forEach((v, i) => {
+    const d = document.createElement('div');
+    d.className = 'picker-item';
+    d.dataset.idx = i;
+    if (isTemp) d.dataset.color = tempColorClass(v);
+    d.textContent = v % 1 === 0 ? String(v) : v.toFixed(1);
+    list.appendChild(d);
+  });
+  for (let i = 0; i < PAD; i++) {
+    const d = document.createElement('div'); d.className = 'picker-item'; list.appendChild(d);
+  }
+
+  let currentOffset = 0, dragging = false, startY = 0, startIdx = 0;
+
+  const idxToOffset = idx => H / 2 - (PAD + idx) * ITEM_H - ITEM_H / 2;
+  const offsetToIdx = off => {
+    const raw = (H / 2 - off - ITEM_H / 2) / ITEM_H - PAD;
+    return Math.round(Math.max(0, Math.min(vals.length - 1, raw)));
+  };
+
+  function updateHighlight(idx) {
+    list.querySelectorAll('.picker-item[data-idx]').forEach(el => {
+      const i = parseInt(el.dataset.idx);
+      el.classList.remove('active', 'near', 'cold', 'warm', 'hot');
+      if (i === idx) {
+        el.classList.add('active');
+        if (el.dataset.color) el.classList.add(el.dataset.color);
+      } else if (Math.abs(i - idx) === 1) el.classList.add('near');
+    });
+  }
+
+  function applyOffset(offset, animate) {
+    list.style.transition = animate ? 'transform 0.2s ease-out' : 'none';
+    list.style.transform  = `translateY(${offset}px)`;
+    currentOffset = offset;
+    updateHighlight(offsetToIdx(offset));
+  }
+
+  function snapTo(idx) {
+    const c = Math.max(0, Math.min(vals.length - 1, idx));
+    applyOffset(idxToOffset(c), true);
+    return c;
+  }
+
+  const initIdx = vals.findIndex(v => Math.abs(v - initVal) < 0.001) || 0;
+  applyOffset(idxToOffset(Math.max(0, initIdx)), false);
+
+  picker.addEventListener('pointerdown', e => {
+    dragging = true; startY = e.clientY; startIdx = offsetToIdx(currentOffset);
+    list.style.transition = 'none'; picker.setPointerCapture(e.pointerId); e.preventDefault();
+  });
+  picker.addEventListener('pointermove', e => {
+    if (!dragging) return;
+    const newOff = idxToOffset(startIdx) + (e.clientY - startY);
+    const minOff = idxToOffset(vals.length - 1), maxOff = idxToOffset(0);
+    applyOffset(Math.max(minOff, Math.min(maxOff, newOff)), false);
+  });
+  picker.addEventListener('pointerup', () => {
+    if (!dragging) return; dragging = false;
+    const idx = snapTo(offsetToIdx(currentOffset));
+    onCommit(vals[idx]);
+  });
+  picker.addEventListener('pointercancel', () => { dragging = false; snapTo(offsetToIdx(currentOffset)); });
+}
+
+// ══════════════════════════════════════════════
+//  Equalize card heights
+// ══════════════════════════════════════════════
+function equalizeHeights() {
+  const cards = document.querySelectorAll('.card');
+  cards.forEach(c => { c.style.height = ''; }); // reset
+  const maxH = Math.max(...[...cards].map(c => c.offsetHeight));
+  cards.forEach(c => c.style.height = maxH + 'px');
+}
+
+// ══════════════════════════════════════════════
+//  Init classic layout
+// ══════════════════════════════════════════════
+initDial('c-tempDial', 'c-tempArc', 'c-tempVal', TEMP_MIN, TEMP_MAX, TEMP_INIT,
+  v => showToast('c-toast', `🌡 ${v}°C`));
+initDial('c-flowDial', 'c-flowArc', 'c-flowVal', FLOW_MIN, FLOW_MAX, FLOW_INIT,
+  v => showToast('c-toast', `🌊 ${v} L/min`));
+initDrainBtn('c-drainBtn', 'c-drainLabel', 'c-toast');
+initWaterBtn('c-waterBtn', 'c-waterLabel', 'c-statusDot', 'c-toast');
+
+// ══════════════════════════════════════════════
+//  Init modern layout
+// ══════════════════════════════════════════════
+initPicker('m-tempPicker', 'm-tempList', TEMP_VALS, TEMP_INIT, true,
+  v => showToast('m-toast', `🌡 ${v}°C`));
+initPicker('m-flowPicker', 'm-flowList', FLOW_VALS, FLOW_INIT, false,
+  v => showToast('m-toast', `🌊 ${v} L/min`));
+initDrainBtn('m-drainBtn', 'm-drainLabel', 'm-toast');
+initWaterBtn('m-waterBtn', 'm-waterLabel', 'm-statusDot', 'm-toast');
+
+// ══════════════════════════════════════════════
+//  Run after layout
+// ══════════════════════════════════════════════
+window.addEventListener('load', equalizeHeights);
+window.addEventListener('resize', equalizeHeights);
+</script>
+</body>
+</html>

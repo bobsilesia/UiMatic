@@ -17,7 +17,7 @@ class OblamatikCard extends HTMLElement {
     this._flowValue  = 0;
     this._tempValue  = 38;
     this._waterOn    = false;
-    this._drainOpen  = false;
+    this._drainOpen  = true;   // default: drain is OPEN (flood-safe)
     // classic
     this._draggingFlow = false;
     this._draggingTemp = false;
@@ -127,12 +127,13 @@ class OblamatikCard extends HTMLElement {
         </div>
 
         <div class="bottom-row">
-          <button class="drain-btn" id="drainBtn" type="button" aria-label="Toggle drain">
+          <button class="water-wide-btn" id="waterWideBtn" type="button" aria-label="Toggle water">
+            <div class="ripple-ring"></div>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="3"/>
-              <path d="M12 5v2M12 17v2M5 12H7M17 12h2M7.05 7.05l1.41 1.41M15.54 15.54l1.41 1.41M7.05 16.95l1.41-1.41M15.54 8.46l1.41-1.41"/>
+              <path d="M12 2C6 8 4 12 4 15a8 8 0 0016 0c0-3-2-7-8-13z"/>
+              <path d="M9 18c0 1.7 1.3 3 3 3s3-1.3 3-3"/>
             </svg>
-            <span id="drainLabel">Drain</span>
+            <span id="waterWideLabel">Water</span>
           </button>
         </div>
 
@@ -194,51 +195,47 @@ class OblamatikCard extends HTMLElement {
         gap: 12px; flex: 1; min-height: 0; margin-bottom: 20px;
       }
 
-      /* ── Water button (shared) ── */
-      .water-wrapper { display: flex; flex-direction: column; align-items: center; gap: 10px; flex-shrink: 0; }
-      .water-btn {
-        width: clamp(62px, 18cqw, 88px); height: clamp(62px, 18cqw, 88px);
+      /* ── Drain round button (center) ── */
+      .drain-round-wrapper { display: flex; flex-direction: column; align-items: center; gap: 8px; flex-shrink: 0; }
+      .drain-round-btn {
+        width: clamp(46px, 13.5cqw, 66px); height: clamp(46px, 13.5cqw, 66px);
         border-radius: 50%; border: none;
         background: linear-gradient(145deg, #1e2535, #161b27);
-        box-shadow: 6px 6px 16px rgba(0,0,0,0.5), -4px -4px 12px rgba(255,255,255,0.03), inset 0 0 0 2px #252d3d;
+        box-shadow: 5px 5px 14px rgba(0,0,0,0.5), inset 0 0 0 2px #252d3d;
         cursor: pointer; display: flex; align-items: center; justify-content: center;
-        transition: all 0.3s ease; position: relative; overflow: hidden;
+        transition: transform 0.15s ease;
       }
-      .water-btn:active { transform: scale(0.94); }
-      .water-btn.on {
-        background: linear-gradient(145deg, #0d4f7a, #0a3d5e);
-        box-shadow: 6px 6px 16px rgba(0,0,0,0.5), inset 0 0 0 2px #1a6fa0, 0 0 22px rgba(64,196,255,0.25);
-      }
-      .water-btn svg { width: clamp(24px, 7cqw, 32px); height: clamp(24px, 7cqw, 32px); }
-      .icon-off { color: #3a4a5c; }
-      .water-btn.on .icon-off { display: none; }
-      .icon-on  { display: none; color: #40c4ff; }
-      .water-btn.on .icon-on { display: block; }
-      .ripple-ring { position: absolute; border-radius: 50%; border: 2px solid rgba(64,196,255,0.3); pointer-events: none; }
-      @keyframes ripple {
-        0%   { width: 76px;  height: 76px;  top: 0;    left: 0;    opacity: 0.6; }
-        100% { width: 140px; height: 140px; top: -32px; left: -32px; opacity: 0; }
-      }
-      .water-btn.on .ripple-ring { animation: ripple 1.8s ease-out infinite; }
-      .water-btn-label { font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 1.2px; color: #6b7a8d; }
+      .drain-round-btn:active { transform: scale(0.92); }
+      .drain-round-btn svg { width: clamp(18px, 5.3cqw, 24px); height: clamp(18px, 5.3cqw, 24px); }
+      .drain-icon-open  { color: #34d399; display: block; }
+      .drain-round-btn.closed .drain-icon-open { display: none; }
+      .drain-icon-closed { color: #ef4444; display: none; }
+      .drain-round-btn.closed .drain-icon-closed { display: block; }
+      .drain-round-label { font-size: 9px; font-weight: 500; text-transform: uppercase; letter-spacing: 1.2px; color: #6b7a8d; }
 
-      /* ── Drain / Bottom row (shared) ── */
+      /* ── Water wide button / Bottom row (shared) ── */
       .bottom-row { display: flex; gap: 10px; }
-      .drain-btn {
+      .water-wide-btn {
         flex: 1; height: 50px; border-radius: 14px; border: none;
         background: linear-gradient(145deg, #1e2535, #161b27);
         box-shadow: 4px 4px 10px rgba(0,0,0,0.4), inset 0 0 0 1.5px #252d3d;
         cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
         color: #4a5568; font-size: 12px; font-weight: 500; letter-spacing: 0.3px;
-        transition: all 0.3s; font-family: inherit;
+        transition: all 0.3s; font-family: inherit; position: relative; overflow: hidden;
       }
-      .drain-btn:active { transform: scale(0.97); }
-      .drain-btn.open {
-        background: linear-gradient(145deg, #1a3a2a, #122a1e);
-        box-shadow: 4px 4px 10px rgba(0,0,0,0.4), inset 0 0 0 1.5px #1e5c3a, 0 0 14px rgba(52,211,153,0.2);
-        color: #34d399;
+      .water-wide-btn:active { transform: scale(0.97); }
+      .water-wide-btn.on {
+        background: linear-gradient(145deg, #0d4f7a, #0a3d5e);
+        box-shadow: 4px 4px 10px rgba(0,0,0,0.4), inset 0 0 0 1.5px #1a6fa0, 0 0 16px rgba(64,196,255,0.25);
+        color: #40c4ff;
       }
-      .drain-btn svg { width: 17px; height: 17px; flex-shrink: 0; }
+      .water-wide-btn svg { width: 17px; height: 17px; flex-shrink: 0; }
+      .water-wide-btn .ripple-ring { position: absolute; border-radius: 50%; border: 2px solid rgba(64,196,255,0.3); pointer-events: none; }
+      @keyframes rippleWide {
+        0%   { width: 40px; height: 40px; top: 50%; left: 50%; transform: translate(-50%,-50%); opacity: 0.6; }
+        100% { width: 200px; height: 200px; top: 50%; left: 50%; transform: translate(-50%,-50%); opacity: 0; }
+      }
+      .water-wide-btn.on .ripple-ring { animation: rippleWide 2s ease-out infinite; }
 
       /* ── Toast (shared) ── */
       .toast {
@@ -404,22 +401,23 @@ class OblamatikCard extends HTMLElement {
     `;
   }
 
-  // ── Shared water button HTML ──────────────────────────────────────────────
+  // ── Drain round button HTML (center) ─────────────────────────────────────
 
   _waterBtnHTML() {
     return `
-      <div class="water-wrapper">
-        <button class="water-btn" id="waterBtn" type="button" aria-label="Toggle water">
-          <div class="ripple-ring"></div>
-          <svg class="icon-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 2C6 8 4 12 4 15a8 8 0 0016 0c0-3-2-7-8-13z"/>
+      <div class="drain-round-wrapper">
+        <button class="drain-round-btn" id="drainRoundBtn" type="button" aria-label="Toggle drain">
+          <svg class="drain-icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M12 5v2M12 17v2M5 12H7M17 12h2M7.05 7.05l1.41 1.41M15.54 15.54l1.41 1.41M7.05 16.95l1.41-1.41M15.54 8.46l1.41-1.41"/>
           </svg>
-          <svg class="icon-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 2C6 8 4 12 4 15a8 8 0 0016 0c0-3-2-7-8-13z"/>
-            <path d="M9 18c0 1.7 1.3 3 3 3s3-1.3 3-3"/>
+          <svg class="drain-icon-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M12 5v2M12 17v2M5 12H7M17 12h2M7.05 7.05l1.41 1.41M15.54 15.54l1.41 1.41M7.05 16.95l1.41-1.41M15.54 8.46l1.41-1.41"/>
+            <line x1="4" y1="4" x2="20" y2="20" stroke="#ef4444" stroke-width="1.5"/>
           </svg>
         </button>
-        <span class="water-btn-label" id="waterLabel">Water</span>
+        <span class="drain-round-label" id="drainRoundLabel">Drain Open</span>
       </div>
     `;
   }
@@ -427,11 +425,11 @@ class OblamatikCard extends HTMLElement {
   // ── Events ────────────────────────────────────────────────────────────────
 
   _attachEvents() {
-    const root     = this.shadowRoot;
-    const waterBtn = root.getElementById("waterBtn");
-    const drainBtn = root.getElementById("drainBtn");
-    if (waterBtn) waterBtn.addEventListener("click", () => this._toggleWater());
-    if (drainBtn) drainBtn.addEventListener("click", () => this._toggleDrain());
+    const root          = this.shadowRoot;
+    const waterWideBtn  = root.getElementById("waterWideBtn");
+    const drainRoundBtn = root.getElementById("drainRoundBtn");
+    if (waterWideBtn)  waterWideBtn.addEventListener("click",  () => this._toggleWater());
+    if (drainRoundBtn) drainRoundBtn.addEventListener("click", () => this._toggleDrain());
 
     if (this._config.layout === "modern") {
       // pickers are set up after render in _initPickers()
@@ -655,19 +653,19 @@ class OblamatikCard extends HTMLElement {
   // ── Shared update helpers ─────────────────────────────────────────────────
 
   _updateWaterBtn() {
-    const btn   = this.shadowRoot.getElementById("waterBtn");
+    const btn   = this.shadowRoot.getElementById("waterWideBtn");
     const dot   = this.shadowRoot.getElementById("statusDot");
-    const label = this.shadowRoot.getElementById("waterLabel");
+    const label = this.shadowRoot.getElementById("waterWideLabel");
     if (btn)   btn.classList.toggle("on", this._waterOn);
     if (dot)   dot.classList.toggle("active", this._waterOn);
     if (label) label.textContent = this._waterOn ? "Running" : "Water";
   }
 
   _updateDrainBtn() {
-    const btn   = this.shadowRoot.getElementById("drainBtn");
-    const label = this.shadowRoot.getElementById("drainLabel");
-    if (btn)   btn.classList.toggle("open", this._drainOpen);
-    if (label) label.textContent = this._drainOpen ? "Drain Open" : "Drain";
+    const btn   = this.shadowRoot.getElementById("drainRoundBtn");
+    const label = this.shadowRoot.getElementById("drainRoundLabel");
+    if (btn)   btn.classList.toggle("closed", !this._drainOpen);
+    if (label) label.textContent = this._drainOpen ? "Drain Open" : "Drain Closed";
   }
 
   // ── Commands ──────────────────────────────────────────────────────────────

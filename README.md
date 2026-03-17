@@ -26,6 +26,25 @@ A modern, minimalist **Lovelace custom card** for Home Assistant to control **Ob
 
 ---
 
+## How it works?
+
+Try the **interactive simulator** in your browser – no Home Assistant required:
+
+👉 **[Open simulator (demo-picker.html)](https://raw.githack.com/bobsilesia/UiMatic/main/demo-picker.html)**
+
+The simulator shows both layouts side-by-side with fully working controls:
+
+| Control | Function |
+|---------|----------|
+| 🔘 Round button (center) | **Drain** open / closed — default: **open** (flood-safe) |
+| ▬ Wide button (bottom) | **Water** ON / OFF with ripple animation |
+| Arc dials *(classic)* | Drag to set temperature & flow |
+| Drum pickers *(modern)* | Swipe up/down to scroll values |
+
+> **Safety note:** The drain is **open by default**. This prevents bathroom flooding if water is accidentally turned on before closing the drain.
+
+---
+
 ## Installation
 
 ### HACS (recommended)
